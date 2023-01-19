@@ -27,6 +27,7 @@ nnoremap <leader>* viw:action FindInPath<cr>
 
 nnoremap <leader>bb :action RecentFiles<cr>
 
+nnoremap <leader>ee :action ShowErrorDescription<cr>
 nnoremap <leader>en :action GotoNextError<cr>
 nnoremap <leader>ep :action GotoPreviousError<cr>
 
