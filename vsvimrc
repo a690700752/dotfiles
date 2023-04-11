@@ -1,0 +1,27 @@
+inoremap fd <Esc>
+set so=1
+let mapleader=" "
+set hlsearch 
+set incsearch 
+set ignorecase
+set smartcase
+
+nmap <C-O> :vsc View.NavigateBackward<cr>
+nmap <C-I> :vsc View.NavigateForward<cr>
+
+nmap <C-W><C-W> :vsc Window.NextDocumentWindow<cr>
+
+nmap <leader><leader> :vsc View.CommandWindow<cr>
+
+nmap <leader>w- :vsc Window.NewHorizontalTabGroup<cr>
+nmap <leader>w/ :vsc Window.NewVerticalTabGroup<cr>
+
+nmap <leader>fs :vsc File.SaveSelectedItems<cr>
+nmap <leader>fS :vsc File.SaveAll<cr>
+
+nmap <leader>pf :vsc Edit.GoToAll<cr>
+
+nmap <leader>j= :vsc Edit.FormatDocument<cr>
+
+nmap <leader>mrr :vsc Refactor.Rename<cr>
+nmap <leader>mhp :vsc Edit.ParameterInfo<cr>

@@ -1,0 +1,82 @@
+" Font size 20
+
+set so=1
+let mapleader=" "
+set hlsearch 
+set incsearch 
+set ignorecase
+set smartcase
+set surround
+set nrformats-=octal
+set clipboard=unnamedplus
+inoremap jk <Esc>
+
+nnoremap gd :action GotoDeclaration<cr>
+nnoremap g; :action JumpToLastChange<cr>
+
+nnoremap <S-tab> :bp<cr>
+nnoremap <tab> :bn<cr>
+
+nnoremap <leader><tab> :b#<cr>
+nnoremap <leader><leader> :action GotoAction<cr>
+vnoremap <leader><leader> :action GotoAction<cr>
+nnoremap <leader>' :action ActivateTerminalToolWindow<cr>
+
+nnoremap <leader>/ :action FindInPath<cr>
+nnoremap <leader>* viw:action FindInPath<cr>
+
+nnoremap <leader>bb :action RecentFiles<cr>
+
+nnoremap <leader>en :action GotoNextError<cr>
+nnoremap <leader>ep :action GotoPreviousError<cr>
+
+nnoremap <leader>sc :noh<cr>
+nnoremap <leader>sj :action FileStructurePopup<cr>
+
+nnoremap <leader>fr :action RecentFiles<cr>
+nnoremap <leader>fed :e ~/.ideavimrc<cr>
+
+nnoremap <leader>pf :action SearchEverywhere<cr>
+
+
+nnoremap <leader>w/ :action SplitVertically<cr>
+nnoremap <leader>w- :action SplitHorizontally<cr>
+nnoremap <leader>wm :action VimWindowOnly<cr>
+nnoremap <leader>wd :action CloseEditor<cr>
+
+nmap <leader>jj :action KJumpAction<cr>
+vmap <leader>jj :action KJumpAction<cr>
+
+
+nnoremap <leader>jj :action KJumpAction<cr>
+
+nnoremap <leader>jl :action KJumpAction.Line<cr>
+nnoremap <leader>jw :action KJumpAction.Word1<cr>
+
+nnoremap <leader>j= :action ReformatCode<cr>
+
+nnoremap <leader>oy :action TranslatePlugin.TranslateAction<cr>
+
+nnoremap <leader>mfm :action FileStructurePopup<cr>
+nnoremap <leader>mrr :action RenameElement<cr>
+nnoremap <leader>mrf :action ReformatCode<cr>
+nnoremap <leader>mgi :action GotoImplementation<cr>
+nnoremap <leader>mgs :action GotoSuperMethod<cr>
+nnoremap <leader>mgr :action GotoRelated<cr>
+nnoremap <leader>mhu :action FindUsages<cr>
+nnoremap <leader>mhp :action ParameterInfo<cr>
+nnoremap <leader>mhd :action QuickJavaDoc<cr>
+
+nnoremap <leader>; :action CommentByLineComment<cr>
+vnoremap <leader>; :action CommentByLineComment<cr>
+
+nnoremap <leader>xr :action RenameElement<cr>
+nnoremap <leader>xi :action OptimizeImports<cr>
+nnoremap <leader>x. :action ShowIntentionActions<cr>
+
+nnoremap ,hp :action ParameterInfo<cr>
+nnoremap ,ee :action ExecuteInPyConsoleAction<cr>
+
+nnoremap <C-O> :action Back<cr>
+nnoremap <C-I> :action Forward<cr>
+set ideajoin

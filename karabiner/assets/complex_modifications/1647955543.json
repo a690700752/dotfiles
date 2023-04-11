@@ -1,0 +1,1 @@
+{"title":"Caps Lock to Left Ctrl (Caps Lock if alone)","rules":[{"description":"Caps Lock to Left Ctrl (Caps Lock if alone)","manipulators":[{"type":"basic","from":{"key_code":"caps_lock"},"to":[{"repeat":true,"key_code":"left_control"}],"to_if_alone":[{"repeat":true,"key_code":"caps_lock"}]}]}]}
