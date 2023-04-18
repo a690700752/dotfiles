@@ -51,7 +51,7 @@ vmap <leader>jj :action KJumpAction<cr>
 nnoremap <leader>jj :action KJumpAction<cr>
 
 nnoremap <leader>jl :action KJumpAction.Line<cr>
-nnoremap <leader>jw :action KJumpAction.Word1<cr>
+nnoremap s :action KJumpAction.Word0<cr>
 
 nnoremap <leader>j= :action ReformatCode<cr>
 
