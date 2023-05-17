@@ -4,7 +4,7 @@ alias vim='nvim'
 alias rm='safe-rm'
 alias typora='open -a typora'
 alias todo='vim ~/prj/note/orgs/gtd.org'
-alias ssh="trzsz -d ssh"
+# alias ssh="trzsz -d ssh"
 alias cr="code -r"
 
 alias proxy='export https_proxy=http://127.0.0.1:7890 http_proxy=http://127.0.0.1:7890 all_proxy=socks5://127.0.0.1:7890'
@@ -129,3 +129,4 @@ if [ -f "$HOME/.cargo/env"  ]; then
   . "$HOME/.cargo/env"
 fi
 
+[ "$TERM" = "xterm-kitty" ] && alias ssh="kitty +kitten ssh"

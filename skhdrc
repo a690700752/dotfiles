@@ -1,0 +1,33 @@
+# open terminal
+cmd - return : /Applications/Kitty.app/Contents/MacOS/kitty --single-instance -d ~ &> /dev/null
+
+# focus window
+cmd - h : yabai -m window --focus west
+cmd - j : yabai -m window --focus south
+cmd - k : yabai -m window --focus north
+cmd - l : yabai -m window --focus east
+
+# balance size of windows
+shift + ctrl - b : yabai -m space --balance
+
+# focus monitor
+cmd - 1  : yabai -m display --focus 1
+cmd - 2  : yabai -m display --focus 2
+cmd - 3  : yabai -m display --focus 3
+
+# send window to monitor and follow focus
+shift + cmd - 1  : yabai -m window --display 1; yabai -m display --focus 1
+shift + cmd - 2  : yabai -m window --display 2; yabai -m display --focus 2
+shift + cmd - 3  : yabai -m window --display 3; yabai -m display --focus 3
+
+# rotate tree
+shift + ctrl - r : yabai -m space --rotate 90
+
+# toggle window native fullscreen
+shift + ctrl - f : yabai -m window --toggle native-fullscreen
+
+# toggle window split type
+shift + ctrl - e : yabai -m window --toggle split
+
+# toggle window fullscreen zoom
+alt - f : yabai -m window --toggle zoom-fullscreen
