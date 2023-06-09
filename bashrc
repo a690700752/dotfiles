@@ -5,15 +5,34 @@ alias rm='safe-rm'
 alias typora='open -a typora'
 alias todo='vim ~/prj/note/orgs/gtd.org'
 # alias ssh="trzsz -d ssh"
+alias ssh="TERM=xterm-256color /usr/bin/ssh"
 alias cr="code -r"
 
 alias proxy='export https_proxy=http://127.0.0.1:7890 http_proxy=http://127.0.0.1:7890 all_proxy=socks5://127.0.0.1:7890'
 alias noproxy='export https_proxy= http_proxy= all_proxy='
-
 proxy
 
-alias git-report='git_log.py ~/prj'
-alias git-cz='npx git-cz'
+alias g='git'
+alias gd='git diff'
+alias gdc='git diff --cached'
+alias greport='git_log.py ~/prj'
+alias gcz='npx git-cz'
+alias gzip="git archive HEAD -o"
+alias gwip='git add -A; git rm $(git ls-files --deleted) 2> /dev/null; git commit --no-verify --no-gpg-sign --message "--wip-- [skip ci]"'
+alias gunwip='git rev-list --max-count=1 --format="%s" HEAD | grep -q "\--wip--" && git reset HEAD~1'
+alias glo="git log --graph --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%an%C(reset)%C(bold yellow)%d%C(reset) %C(dim white)- %s%C(reset)' --all"
+alias gl='git pull'
+alias gp='git push'
+alias gco='git checkout'
+alias gc='git commit --verbose'
+alias gst='git status'
+alias gb='git branch'
+alias gba='git branch -a'
+
+# Warn if the current branch is a WIP
+function work_in_progress() {
+  command git -c log.showSignature=false log -n 1 2>/dev/null | grep -q -- "--wip--" && echo "WIP!!"
+}
 
 alias adb-input-menu='adb shell input keyevent 82'
 alias adb-scrcpy='scrcpy -w -S -m 1080 >/dev/null 2>&1 &'
@@ -116,7 +135,7 @@ function parse_proxy_state() {
 	fi
 }
 
-export PS1="\n\[\e[94m\]# \w\[\e[m\] \$(parse_git_branch) [\t]\n\$(parse_proxy_state)\[\e[31m\]\\$\[\e[m\] "
+export PS1="\n\[\e[94m\]# \w\[\e[m\] \$(parse_git_branch) \$(work_in_progress) [\t]\n\$(parse_proxy_state)\[\e[31m\]\\$\[\e[m\] "
 
 export NVM_DIR="$HOME/.nvm"
 [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
@@ -128,5 +147,3 @@ eval "$(thefuck --alias)"
 if [ -f "$HOME/.cargo/env"  ]; then
   . "$HOME/.cargo/env"
 fi
-
-[ "$TERM" = "xterm-kitty" ] && alias ssh="kitty +kitten ssh"
