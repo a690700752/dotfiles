@@ -13,21 +13,24 @@ alias noproxy='export https_proxy= http_proxy= all_proxy='
 proxy
 
 alias g='git'
+alias gb='git branch'
+alias gba='git branch -a'
+alias gc='git commit --verbose'
+alias gco='git checkout'
+alias gcz='npx git-cz'
 alias gd='git diff'
+function gdnolock() {
+  git diff "$@" ":(exclude)package-lock.json" ":(exclude)*.lock"
+}
 alias gdc='git diff --cached'
 alias greport='git_log.py ~/prj'
-alias gcz='npx git-cz'
 alias gzip="git archive HEAD -o"
 alias gwip='git add -A; git rm $(git ls-files --deleted) 2> /dev/null; git commit --no-verify --no-gpg-sign --message "--wip-- [skip ci]"'
 alias gunwip='git rev-list --max-count=1 --format="%s" HEAD | grep -q "\--wip--" && git reset HEAD~1'
 alias glo="git log --graph --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%an%C(reset)%C(bold yellow)%d%C(reset) %C(dim white)- %s%C(reset)' --all"
 alias gl='git pull'
 alias gp='git push'
-alias gco='git checkout'
-alias gc='git commit --verbose'
 alias gst='git status'
-alias gb='git branch'
-alias gba='git branch -a'
 
 # Warn if the current branch is a WIP
 function work_in_progress() {
