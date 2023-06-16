@@ -183,5 +183,3 @@ export NVM_DIR="$HOME/.nvm"
 
 eval "$(thefuck --alias)"
 
-if [ -f "$HOME/.cargo/env"  ]; then
-  fi
