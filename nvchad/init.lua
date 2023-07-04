@@ -51,5 +51,3 @@ vim.api.nvim_create_autocmd("InsertLeave", {
 		end
 	end,
 })
-
-vim.o.shell = "/usr/bin/env zsh"
