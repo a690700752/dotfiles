@@ -1,5 +1,3 @@
-vim.opt.clipboard = "unnamedplus"
-
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
 	vim.fn.system({
@@ -12,6 +10,10 @@ if not vim.loop.fs_stat(lazypath) then
 	})
 end
 vim.opt.rtp:prepend(lazypath)
+
+vim.opt.clipboard = "unnamedplus"
+vim.o.ignorecase = true
+vim.o.smartcase = true
 
 require("lazy").setup({
 	"nvim-lua/plenary.nvim",
