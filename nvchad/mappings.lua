@@ -102,10 +102,10 @@ M.normal = {
 		["g;"] = { "`Mzz", "jump modify position" },
 
 		["<leader>oe"] = { require("custom/eval_iron").eval_block, "eval block" },
-		["s"] = { "<cmd> :HopWord<cr>", "Go to word" },
+		-- ["s"] = { "<cmd> :HopWord<cr>", "Go to word" },
 	},
 	v = {
-		["s"] = { "<cmd> :HopWord<cr>", "Go to word" },
+		-- ["s"] = { "<cmd> :HopWord<cr>", "Go to word" },
 	},
 	t = {
 		["<ESC>"] = { '<cmd>lua require("nvterm.terminal").toggle "float"<cr>', "terminal" },
