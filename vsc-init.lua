@@ -50,9 +50,11 @@ require("lazy").setup({
 		"andymass/vim-matchup",
 		config = function()
 			vim.g.loaded_matchit = 1
+			vim.g.matchup_matchparen_enabled = 1
 			vim.g.matchup_matchparen_offscreen = {
 				-- method = "popup",
 			}
+			vim.cmd(":hi MatchParen ctermbg=blue guibg=lightblue")
 		end,
 	},
 	{
@@ -75,17 +77,16 @@ local function getVisualSelection()
 	return start, finish
 end
 
-local function exit_visual_mode()
-	vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<Esc>", true, false, true), "n", true)
-end
-
 vim.keymap.set("n", "<space>", ":call VSCodeNotify('vspacecode.space')<CR>")
 vim.keymap.set("x", "<space>", function()
 	local start, finish = getVisualSelection()
-	if vim.fn.visualmode() == "V" then
-		vim.fn.VSCodeNotifyRange("vspacecode.space", start[2], finish[2], 1)
+	if vim.fn.mode() == "V" then
+		require("vscode-neovim").notify_range("vspacecode.space", start[2], finish[2], 1)
 	else
-		vim.fn.VSCodeNotifyRangePos("vspacecode.space", start[2], finish[2], start[3], finish[3], 1)
+		require("vscode-neovim").notify_range_pos("vspacecode.space", start[2], finish[2], start[3], finish[3], 1)
 	end
-	exit_visual_mode()
+end)
+
+vim.keymap.set("n", "g;", function()
+	vim.fn.VSCodeNotify("workbench.action.navigateToLastEditLocation")
 end)
