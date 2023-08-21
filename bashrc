@@ -5,7 +5,7 @@ alias rm='safe-rm'
 alias typora='open -a typora'
 alias todo='vim ~/prj/note/orgs/gtd.org'
 # alias ssh="trzsz -d ssh"
-alias ssh="TERM=xterm-256color /usr/bin/ssh"
+alias ssh="TERM=xterm-256color ssh"
 alias cr="code -r"
 
 # 
