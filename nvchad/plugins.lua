@@ -239,7 +239,7 @@ local plugins = {
 	{ "tpope/vim-repeat" },
 	{
 		"ggandor/leap.nvim",
-		enabled = false,
+		enabled = true,
 		config = function()
 			require("leap").add_default_mappings()
 		end,
