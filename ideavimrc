@@ -1,3 +1,4 @@
+" git clone https://github.com/MarcoIeni/intellimacs ~/.intellimacs
 " Font size 20
 
 source ~/.intellimacs/spacemacs.vim
