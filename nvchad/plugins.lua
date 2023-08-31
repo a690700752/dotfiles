@@ -248,6 +248,7 @@ local plugins = {
 	{ "gennaro-tedesco/nvim-peekup" },
 	{
 		"phaazon/hop.nvim",
+		enabled = false,
 		config = function()
 			require("hop").setup()
 		end,
