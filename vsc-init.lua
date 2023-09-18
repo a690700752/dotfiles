@@ -19,7 +19,6 @@ require("lazy").setup({
 	"nvim-lua/plenary.nvim",
 	{
 		"ggandor/leap.nvim",
-		disable = true,
 		config = function()
 			require("leap").add_default_mappings()
 		end,
