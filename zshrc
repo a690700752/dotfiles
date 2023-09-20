@@ -7,9 +7,6 @@ if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]
   source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# Add RVM to PATH for scripting. Make sure this is the last PATH variable change.
-export PATH="$PATH:$HOME/.rvm/bin"
-
 # If you come from bash you might have to change your $PATH.
 # export PATH=$HOME/bin:/usr/local/bin:$PATH
 
@@ -93,6 +90,8 @@ plugins=(
   vscode
   nvm
   # thefuck
+  brew
+  rbenv
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -134,7 +133,7 @@ alias gcz='npx git-cz'
 alias proxy='export https_proxy=http://127.0.0.1:7890 http_proxy=http://127.0.0.1:7890 all_proxy=socks5://127.0.0.1:7890'
 alias noproxy='export https_proxy= http_proxy= all_proxy='
 proxy
-alias ssh="TERM=xterm-256color /usr/bin/ssh"
+alias ssh="env -i TERM=xterm-256color ssh"
 alias rm='safe-rm'
 # 
 # adb
@@ -180,3 +179,5 @@ export HOMEBREW_BOTTLE_DOMAIN="https://mirrors.aliyun.com/homebrew/homebrew-bott
 export SHELL="zsh"
 
 # zprof
+
+eval $(thefuck --alias)
