@@ -74,7 +74,7 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 # Would you like to use another custom folder than $ZSH/custom?
 # ZSH_CUSTOM=/path/to/new-custom-folder
 
-zstyle ':omz:plugins:nvm' lazy yes
+# zstyle ':omz:plugins:nvm' lazy yes
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=180'
 # Which plugins would you like to load?
 # Standard plugins can be found in $ZSH/plugins/
@@ -88,10 +88,11 @@ plugins=(
   zsh-autosuggestions
   colored-man-pages
   vscode
-  nvm
+  # nvm
   # thefuck
   brew
   rbenv
+  fnm
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -169,15 +170,16 @@ export PATH=$PATH:$HOME/Library/Python/3.9/bin
 export PATH=$PATH:$HOME/bin/apache-maven-3.8.6/bin
 
 export LANG="en_US.UTF-8"
-# export HOMEBREW_NO_AUTO_UPDATE=1
+export HOMEBREW_API_DOMAIN="https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles/api"
+export HOMEBREW_BOTTLE_DOMAIN="https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles"
 export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/brew.git"
 export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebrew/homebrew-core.git"
+export HOMEBREW_PIP_INDEX_URL="https://pypi.tuna.tsinghua.edu.cn/simple"
 
-export HOMEBREW_BREW_GIT_REMOTE="https://mirrors.aliyun.com/homebrew/brew.git" 
-export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.aliyun.com/homebrew/homebrew-core.git"
-export HOMEBREW_BOTTLE_DOMAIN="https://mirrors.aliyun.com/homebrew/homebrew-bottles"
 export SHELL="zsh"
 
 # zprof
 
 eval $(thefuck --alias)
+
+eval "$(fnm env --use-on-cd)"
