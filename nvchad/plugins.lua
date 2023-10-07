@@ -25,7 +25,7 @@ local plugins = {
 			vim.g.copilot_tab_fallback = ""
 		end,
 	},
-	{ "TimUntersberger/neogit" },
+	{ "TimUntersberger/neogit", config = true },
 	{
 		"neovim/nvim-lspconfig",
 		dependencies = {
