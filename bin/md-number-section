@@ -4,6 +4,27 @@ import re
 import sys
 
 
+def removePrefixPoundSign(s):
+    # type: (str) -> str
+    return re.sub(r"^\#+", "", s)
+
+
+def getHeaderId(header):
+    # type : (str) -> str
+    # remove start #+ use regex
+    header = removePrefixPoundSign(header).strip()
+    # 1. All text is converted to lowercase.
+    header = header.lower()
+    # 2. All non-word text (e.g., punctuation, HTML) is removed.
+    header = re.sub(r"[.]", "", header)
+    # 3. All spaces are converted to hyphens.
+    header = header.replace(" ", "-")
+    # 4. Two or more hyphens in a row are converted to one.
+    header = re.sub(r"-+", "-", header)
+    # 5. If a header with the same ID has already been generated, a unique incrementing number is appended, starting at 1.
+    return header
+
+
 def semver_add_by_index(old, num, index):
     s = old.split(".")
     while index >= len(s):
@@ -21,30 +42,46 @@ def semver_add_by_index(old, num, index):
 
 def main():
     file = sys.argv[1]
-    status = "NORMAL"  # type: 'NORMAL' | 'CODE_BLOCK'
-    last_ver = "0"
-    new_content = ""
+
     with open(file) as f:
-        for line in f:
-            add_line = line
-            if status == "NORMAL":
-                if line.startswith("```"):
-                    status = "CODE_BLOCK"
-                elif line.startswith("#"):
-                    s = line.split(" ")
-                    level = len(s[0])
-                    if re.match(r"\d+(\.\d+)*", s[1]):
-                        content = " ".join(s[2:])
-                    else:
-                        content = " ".join(s[1:])
-                    last_ver = semver_add_by_index(last_ver, 1, level - 1)
-                    add_line = " ".join([s[0], last_ver, content])
-            elif status == "CODE_BLOCK":
-                if line.startswith("```"):
-                    status = "NORMAL"
-            new_content += add_line
+        content = f.read()
+
+    last_ver = "0"
+    changed_header = []  # type: list[list[str]]
+
+    def replace(match):
+        # type: (re.Match[str]) -> str
+        nonlocal last_ver, changed_header
+
+        block = match.group(0)
+        if block.startswith("#"):
+            s = block.split(" ")
+            level = len(s[0])
+            if re.match(r"\d+(\.\d+)*", s[1]):
+                content = " ".join(s[2:])
+            else:
+                content = " ".join(s[1:])
+            last_ver = semver_add_by_index(last_ver, 1, level - 1)
+            add_line = " ".join([s[0], last_ver, content])
+            changed_header.append([block, add_line])
+            return add_line
+
+        return block
+
+    content = re.sub(r"^```[\s\S]*?^```|^#+.*", replace, content, flags=re.MULTILINE)
+
+    for h in changed_header:
+        fr = getHeaderId(h[0])
+        to = getHeaderId(h[1])
+
+        content = re.sub(
+            rf"\[([^]\r\n]*)\]\(#{re.escape(fr)}\)",
+            rf"[\1](#{to})",
+            content,
+        )
+
     with open(file, "w") as f:
-        f.write(new_content)
+        f.write(content)
 
 
 if __name__ == "__main__":
