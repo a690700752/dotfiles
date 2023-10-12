@@ -166,7 +166,6 @@ export PATH=$PATH:$ANDROID_HOME/emulator
 export PATH=$PATH:$ANDROID_HOME/tools
 export PATH=$PATH:$ANDROID_HOME/tools/bin
 export PATH=$PATH:$ANDROID_HOME/platform-tools
-export PATH=$PATH:$HOME/Library/Python/3.9/bin
 export PATH=$PATH:$HOME/bin/apache-maven-3.8.6/bin
 
 export LANG="en_US.UTF-8"

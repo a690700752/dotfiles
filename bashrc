@@ -176,11 +176,9 @@ function parse_proxy_state() {
 
 export PS1="\n\[\e[94m\]# \w\[\e[m\] \$(parse_git_branch) \$(gwork_in_progress) [\t]\n\$(parse_proxy_state)\[\e[31m\]\\$\[\e[m\] "
 
-export NVM_DIR="$HOME/.nvm"
-[ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
-[ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+# export NVM_DIR="$HOME/.nvm"
+# [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
+# [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
 
 
-eval "$(thefuck --alias)"
-
-. "$HOME/.cargo/env"
+# eval "$(thefuck --alias)"

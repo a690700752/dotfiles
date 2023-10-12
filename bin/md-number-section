@@ -74,6 +74,9 @@ def main():
         fr = getHeaderId(h[0])
         to = getHeaderId(h[1])
 
+        if fr == to:
+            continue
+
         content = re.sub(
             rf"\[([^]\r\n]*)\]\(#{re.escape(fr)}\)",
             rf"[\1](#{to})",
