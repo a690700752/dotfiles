@@ -12,16 +12,31 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 vim.opt.clipboard = "unnamedplus"
-vim.o.ignorecase = true
-vim.o.smartcase = true
+vim.opt.ignorecase = true
+vim.opt.smartcase = true
 
 require("lazy").setup({
 	"nvim-lua/plenary.nvim",
 	{
 		"ggandor/leap.nvim",
+		enabled = false,
 		config = function()
 			require("leap").add_default_mappings()
 		end,
+	},
+	{
+		"folke/flash.nvim",
+		event = "VeryLazy",
+		---@type Flash.Config
+		opts = {},
+    -- stylua: ignore
+    keys = {
+      { "s", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash" },
+      -- { "S", mode = { "n", "x", "o" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
+      { "r", mode = "o", function() require("flash").remote() end, desc = "Remote Flash" },
+      { "R", mode = { "o", "x" }, function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
+      { "<c-s>", mode = { "c" }, function() require("flash").toggle() end, desc = "Toggle Flash Search" },
+    },
 	},
 	"tpope/vim-repeat",
 	{
@@ -58,6 +73,7 @@ require("lazy").setup({
 	},
 	{
 		"gbprod/yanky.nvim",
+		enabled = false,
 		config = function()
 			require("yanky").setup({})
 			vim.keymap.set({ "n", "x" }, "p", "<Plug>(YankyPutAfter)")
@@ -66,6 +82,32 @@ require("lazy").setup({
 			vim.keymap.set({ "n", "x" }, "gP", "<Plug>(YankyGPutBefore)")
 			vim.keymap.set("n", "<c-n>", "<Plug>(YankyCycleForward)")
 			vim.keymap.set("n", "<c-p>", "<Plug>(YankyCycleBackward)")
+		end,
+	},
+	{
+		"nvim-treesitter/nvim-treesitter",
+		build = ":TSUpdate",
+		config = function()
+			require("nvim-treesitter.configs").setup({
+				ensure_installed = {
+					"lua",
+					"vim",
+					"typescript",
+					"org",
+					"tsx",
+				},
+				-- context_commentstring = {
+				-- 	enable = true,
+				-- 	enable_autocmd = false,
+				-- },
+				incremental_selection = {
+					enable = true,
+					keymaps = {
+						init_selection = "<CR>",
+						node_incremental = "<CR>",
+					},
+				},
+			})
 		end,
 	},
 })

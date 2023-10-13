@@ -44,6 +44,7 @@ local plugins = {
 	},
 	{
 		"hkupty/iron.nvim",
+		enabled = false,
 		config = function()
 			local iron = require("iron.core")
 			local view = require("iron.view")
@@ -119,6 +120,7 @@ local plugins = {
 	},
 	{
 		"andymass/vim-matchup",
+		enabled = false,
 		config = function()
 			vim.g.loaded_matchit = 1
 			vim.g.matchup_matchparen_offscreen = {
@@ -195,6 +197,13 @@ local plugins = {
 				enable = true,
 				enable_autocmd = false,
 			},
+			incremental_selection = {
+				enable = true,
+				keymaps = {
+					init_selection = "<CR>",
+					node_incremental = "<CR>",
+				},
+			},
 		},
 	},
 	{ "JoosepAlviste/nvim-ts-context-commentstring" },
@@ -208,7 +217,7 @@ local plugins = {
 	},
 	{
 		"rmagatti/auto-session",
-		enable = false,
+		enabled = false,
 		config = function()
 			vim.o.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal"
 			require("auto-session").setup({
@@ -219,6 +228,7 @@ local plugins = {
 	},
 	{
 		"aserowy/tmux.nvim",
+		enabled = false,
 		config = function()
 			require("tmux").setup({
 				copy_sync = {
@@ -239,10 +249,24 @@ local plugins = {
 	{ "tpope/vim-repeat" },
 	{
 		"ggandor/leap.nvim",
-		enabled = true,
+		enabled = false,
 		config = function()
 			require("leap").add_default_mappings()
 		end,
+	},
+	{
+		"folke/flash.nvim",
+		event = "VeryLazy",
+		---@type Flash.Config
+		opts = {},
+    -- stylua: ignore
+    keys = {
+      { "s", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash" },
+      { "S", mode = { "n", "x", "o" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
+      { "r", mode = "o", function() require("flash").remote() end, desc = "Remote Flash" },
+      { "R", mode = { "o", "x" }, function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
+      { "<c-s>", mode = { "c" }, function() require("flash").toggle() end, desc = "Toggle Flash Search" },
+    },
 	},
 	{ "stevearc/dressing.nvim" },
 	{ "gennaro-tedesco/nvim-peekup" },

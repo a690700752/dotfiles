@@ -122,7 +122,7 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-alias vim='nvim'
+alias vim='NVIM_APPNAME=lazyvim nvim'
 alias gcz='npx git-cz'
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
@@ -179,6 +179,6 @@ export SHELL="zsh"
 
 # zprof
 
-eval $(thefuck --alias)
+# eval $(thefuck --alias)
 
 eval "$(fnm env --use-on-cd)"
