@@ -23,3 +23,13 @@ map("n", "<leader>x.", function()
   vim.lsp.buf.code_action()
 end, { desc = "Code Action" })
 map("n", "g;", "`Mzz", { desc = "Jump Modify Position" })
+
+vim.api.nvim_create_user_command("MdNumberSection", function()
+  vim.cmd("w")
+  vim.cmd("!md-number-section %")
+end, {})
+
+vim.api.nvim_create_user_command("TsxExtractStyles", function()
+  vim.cmd("w")
+  vim.cmd("!tsx-extract_styles %")
+end, {})
