@@ -12,6 +12,7 @@ vim.keymap.del("n", "<leader><tab>[")
 local map = vim.keymap.set
 
 map("i", "jk", "<Esc>")
+map("n", "<leader>ee", "<cmd>lua vim.diagnostic.open_float()<cr>", { desc = "Show Error" })
 map("n", "<leader>fs", "<cmd>w<cr>", { desc = "Save" })
 map("n", "<leader>fS", "<cmd>wa<cr>", { desc = "Save All" })
 map("n", "<leader><tab>", "<cmd>e #<cr>", { desc = "Last Buffer" })
