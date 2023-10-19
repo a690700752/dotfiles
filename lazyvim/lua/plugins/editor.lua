@@ -11,7 +11,7 @@ return {
         function()
           require("telescope.builtin").buffers({ show_all_buffers = true, sort_mru = true })
         end,
-        "Buffers",
+        desc = "Buffers",
       },
       { "<leader>ss", "<cmd>Telescope current_buffer_fuzzy_find<cr>", desc = "Buffer" },
       {

@@ -123,6 +123,7 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias vim='NVIM_APPNAME=lazyvim nvim'
+alias t='todo.sh -c'
 alias gcz='npx git-cz'
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
@@ -157,7 +158,7 @@ function adb-reverse-tcp() {
 # 
 # env
 #
-export EDITOR='nvim'
+export EDITOR='env NVIM_APPNAME=lazyvim nvim'
 export ANDROID_HOME=$HOME/Library/Android/sdk
 export ANDROID_NDK=$HOME/Library/Android/sdk/ndk/21.4.7075529
 
