@@ -1,5 +1,5 @@
 # open terminal
-cmd - return : env -i /Applications/Kitty.app/Contents/MacOS/kitty --single-instance -d ~ &> /dev/null
+cmd - return : env PATH=  /Applications/Kitty.app/Contents/MacOS/kitty --single-instance -d ~ &> /dev/null
 
 # focus window
 cmd - h : yabai -m window --focus west

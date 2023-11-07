@@ -93,6 +93,8 @@ plugins=(
   brew
   rbenv
   fnm
+  adb
+  yarn
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -168,6 +170,7 @@ export PATH=$PATH:$ANDROID_HOME/tools
 export PATH=$PATH:$ANDROID_HOME/tools/bin
 export PATH=$PATH:$ANDROID_HOME/platform-tools
 export PATH=$PATH:$HOME/bin/apache-maven-3.8.6/bin
+export PATH="$(brew --prefix)/opt/python@3.10/libexec/bin:$PATH"
 
 export LANG="en_US.UTF-8"
 export HOMEBREW_API_DOMAIN="https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles/api"

@@ -34,3 +34,27 @@ vim.api.nvim_create_user_command("TsxExtractStyles", function()
   vim.cmd("w")
   vim.cmd("!tsx-extract_styles %")
 end, {})
+
+vim.api.nvim_create_user_command("FileInFolder", function(tbl)
+  -- call Telescope find_files with a custom cwd
+  require("telescope.builtin").find_files({
+    cwd = tbl.args,
+    hidden = true,
+    no_ignore = true,
+  })
+end, {
+  nargs = 1,
+  complete = "file",
+})
+
+vim.api.nvim_create_user_command("GrepInFolder", function(tbl)
+  -- call Telescope live_grep with a custom cwd
+  require("telescope.builtin").live_grep({
+    cwd = tbl.args,
+    hidden = true,
+    no_ignore = true,
+  })
+end, {
+  nargs = 1,
+  complete = "file",
+})
