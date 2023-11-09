@@ -95,6 +95,7 @@ plugins=(
   fnm
   adb
   yarn
+  vi-mode
 )
 
 source $ZSH/oh-my-zsh.sh
