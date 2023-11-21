@@ -17,6 +17,7 @@ yabai -m rule --add app="^钉钉$" manage=off
 yabai -m rule --add app="^系统偏好设置$" manage=off
 yabai -m rule --add app="^微信$" manage=off
 yabai -m rule --add app="^归档实用工具$" manage=off
+yabai -m rule --add app="^Airy$" manage=off
 
 yabai -m config \
 	mouse_follows_focus off \

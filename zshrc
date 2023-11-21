@@ -125,7 +125,7 @@ source $ZSH/oh-my-zsh.sh
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
-alias vim='NVIM_APPNAME=lazyvim nvim'
+alias vim='nvim'
 alias t='todo.sh -c'
 alias gcz='npx git-cz'
 
@@ -161,7 +161,7 @@ function adb-reverse-tcp() {
 # 
 # env
 #
-export EDITOR='env NVIM_APPNAME=lazyvim nvim'
+export EDITOR='nvim'
 export ANDROID_HOME=$HOME/Library/Android/sdk
 export ANDROID_NDK=$HOME/Library/Android/sdk/ndk/21.4.7075529
 

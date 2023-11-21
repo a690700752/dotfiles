@@ -40,9 +40,9 @@ cmd - 2  : yabai -m display --focus 2
 cmd - 3  : yabai -m display --focus 3
 
 # send window to monitor and follow focus
-# alt + shift - 1  : yabai -m window --display 1; yabai -m display --focus 1
-# alt + shift - 2  : yabai -m window --display 2; yabai -m display --focus 2
-# alt + shift - 3  : yabai -m window --display 3; yabai -m display --focus 3
+cmd + shift - 1  : yabai -m window --display 1; yabai -m display --focus 1
+cmd + shift - 2  : yabai -m window --display 2; yabai -m display --focus 2
+cmd + shift - 3  : yabai -m window --display 3; yabai -m display --focus 3
 
 # rotate tree
 # shift + ctrl - r : yabai -m space --rotate 90

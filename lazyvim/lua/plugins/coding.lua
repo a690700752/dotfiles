@@ -10,34 +10,34 @@ return {
     ---@param opts cmp.ConfigSchema
     opts = function(_, opts)
       local cmp = require("cmp")
-      local luasnip = require("luasnip")
+      -- local luasnip = require("luasnip")
 
       opts.mapping["<C-k>"] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert })
       opts.mapping["<C-j>"] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert })
-      opts.mapping["<Tab>"] = cmp.mapping(function(fallback)
-        -- local copilot_keys = vim.fn["codeium#Accept"]()
-        -- local copilot_keys = ''
-        -- if copilot_keys ~= "" and type(copilot_keys) == "string" then
-        -- vim.api.nvim_feedkeys(copilot_keys, "i", true)
-
-        local codeium_status = vim.fn["codeium#GetStatusString"]()
-        if string.find(codeium_status, "/") then
-          vim.api.nvim_feedkeys(vim.fn["codeium#Accept"](), "i", true)
-        elseif cmp.visible() then
-          cmp.select_next_item()
-        -- You could replace the expand_or_jumpable() calls with expand_or_locally_jumpable()
-        -- that way you will only jump inside the snippet region
-        elseif luasnip.expand_or_jumpable() then
-          luasnip.expand_or_jump()
-        elseif has_words_before() then
-          cmp.complete()
-        else
-          fallback()
-        end
-      end, {
-        "i",
-        "s",
-      })
+      -- opts.mapping["<Tab>"] = cmp.mapping(function(fallback)
+      --   -- local copilot_keys = vim.fn["codeium#Accept"]()
+      --   -- local copilot_keys = ''
+      --   -- if copilot_keys ~= "" and type(copilot_keys) == "string" then
+      --   -- vim.api.nvim_feedkeys(copilot_keys, "i", true)
+      --
+      --   local codeium_status = vim.fn["codeium#GetStatusString"]()
+      --   if string.find(codeium_status, "/") then
+      --     vim.api.nvim_feedkeys(vim.fn["codeium#Accept"](), "i", true)
+      --   elseif cmp.visible() then
+      --     cmp.select_next_item()
+      --   -- You could replace the expand_or_jumpable() calls with expand_or_locally_jumpable()
+      --   -- that way you will only jump inside the snippet region
+      --   elseif luasnip.expand_or_jumpable() then
+      --     luasnip.expand_or_jump()
+      --   elseif has_words_before() then
+      --     cmp.complete()
+      --   else
+      --     fallback()
+      --   end
+      -- end, {
+      --   "i",
+      --   "s",
+      -- })
     end,
   },
   {
