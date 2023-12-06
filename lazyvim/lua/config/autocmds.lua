@@ -29,3 +29,5 @@ local function registerLastModify()
 end
 
 registerLastModify()
+
+vim.cmd("hi FlashLabel guifg=#ffffff")

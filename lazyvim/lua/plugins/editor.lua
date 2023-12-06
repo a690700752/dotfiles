@@ -3,6 +3,7 @@ return {
     "nvim-telescope/telescope.nvim",
     keys = {
       { "<leader>*", mode = { "n", "v" }, "<cmd>Telescope grep_string<cr>", desc = "Live Grep" },
+      { "<leader>/", "<cmd>Telescope live_grep<cr>", desc = "Grep (cwd)" },
       { "<leader>?", "<cmd>Telescope resume<cr>", desc = "Telescope Resume" },
       { "<leader><space>", "<cmd>Telescope commands<cr>", desc = "Commands" },
       { "<leader>pf", "<cmd>Telescope find_files<cr>", "Find Files" },
@@ -22,6 +23,10 @@ return {
           })
         end,
         desc = "Goto Symbol",
+      },
+      {
+        "<leader>gs",
+        false,
       },
     },
   },
@@ -54,4 +59,17 @@ return {
     },
   },
   "LunarVim/bigfile.nvim",
+  {
+    "NeogitOrg/neogit",
+    event = "VeryLazy",
+    dependencies = {
+      -- "nvim-telescope/telescope.nvim", -- optional
+      -- "sindrets/diffview.nvim",        -- optional
+      -- "ibhagwan/fzf-lua",              -- optional
+    },
+    config = true,
+    keys = {
+      { "<leader>gs", "<cmd> :Neogit<cr>", desc = "status" },
+    },
+  },
 }

@@ -129,6 +129,18 @@ alias vim='nvim'
 alias t='todo.sh -c'
 alias gcz='npx git-cz'
 
+[[ ! -f ~/.p.env ]] || source ~/.p.env
+
+function git-cfg-user() {
+  if [ `git remote -v | grep yzw.cn | wc -l` -eq 0 ]; then
+      git config user.name moonveil
+      git config user.email tz59pk@gmail.com
+  else
+      git config user.name $P_NAME
+      git config user.email $P_EMAIL_WORK
+  fi
+}
+
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 

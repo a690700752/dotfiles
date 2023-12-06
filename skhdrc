@@ -7,6 +7,11 @@ cmd - h : yabai -m window --focus west
 # alt - k : yabai -m window --focus north
 cmd - l : yabai -m window --focus east
 
+alt - h : yabai -m window --stack west
+alt - j : yabai -m window --stack south
+alt - k : yabai -m window --stack north
+alt - l : yabai -m window --stack east
+
 # cycle through stack windows
 # alt - p : yabai -m window --focus stack.next || yabai -m window --focus south
 # alt - n : yabai -m window --focus stack.prev || yabai -m window --focus north
@@ -60,5 +65,4 @@ alt - f : yabai -m window --toggle zoom-fullscreen
 
 alt - w : yabai -m window --close
 
-alt - e : yabai -m space --layout bsp
-alt - s : yabai -m space --layout stack
+alt - t : yabai -m space --layout $( [ "$(yabai -m query --spaces --space | jq -re .type)" = 'bsp' ] && echo 'stack' || echo 'bsp' )
