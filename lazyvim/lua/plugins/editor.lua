@@ -72,4 +72,32 @@ return {
       { "<leader>gs", "<cmd> :Neogit<cr>", desc = "status" },
     },
   },
+  {
+    "echasnovski/mini.surround",
+    keys = function(_, keys)
+      keys[1] = {
+        "S",
+        [[:<C-u>lua MiniSurround.add('visual')<CR>]],
+        desc = "Add surrounding",
+        mode = { "x" },
+      }
+    end,
+    opts = {
+      mappings = {
+        add = "ys",
+        delete = "ds",
+        find = "",
+        find_left = "",
+        highlight = "",
+        replace = "cs",
+        update_n_lines = "",
+      },
+    },
+  },
+  {
+    "folke/flash.nvim",
+    keys = {
+      { "S", mode = { "x" }, false },
+    },
+  },
 }
