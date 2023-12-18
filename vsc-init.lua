@@ -1,3 +1,5 @@
+local vscode = require("vscode-neovim")
+vim.notify = vscode.notify
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
 	vim.fn.system({
@@ -28,10 +30,24 @@ require("lazy").setup({
 		"folke/flash.nvim",
 		event = "VeryLazy",
 		---@type Flash.Config
-		opts = {},
+		opts = {
+			modes = {
+				search = {
+					enabled = false,
+				},
+			},
+		},
     -- stylua: ignore
     keys = {
-      { "s", mode = { "n", "x", "o" }, function() require("flash").jump() end, desc = "Flash" },
+      { "s", mode = { "n", "x", "o" }, function()
+        vim.api.nvim_feedkeys('l', 'n', true);
+        vim.schedule(function()
+          vim.defer_fn(function() require("flash").jump() end, 10);
+        end);
+          -- vim.api.nvim_feedkeys('h', 'n', true);
+          --   vim.schedule(function ()
+          --   end);
+      end, desc = "Flash" },
       -- { "S", mode = { "n", "x", "o" }, function() require("flash").treesitter() end, desc = "Flash Treesitter" },
       { "r", mode = "o", function() require("flash").remote() end, desc = "Remote Flash" },
       { "R", mode = { "o", "x" }, function() require("flash").treesitter_search() end, desc = "Treesitter Search" },
@@ -41,6 +57,7 @@ require("lazy").setup({
 	"tpope/vim-repeat",
 	{
 		"tpope/vim-surround",
+		event = "VeryLazy",
 		config = function()
 			vim.g["surround_no_mappings"] = 1
 			-- Just the defaults copied here.
@@ -62,6 +79,7 @@ require("lazy").setup({
 	},
 	{
 		"andymass/vim-matchup",
+		enabled = false,
 		config = function()
 			vim.g.loaded_matchit = 1
 			vim.g.matchup_matchparen_enabled = 1
@@ -72,43 +90,34 @@ require("lazy").setup({
 		end,
 	},
 	{
-		"gbprod/yanky.nvim",
-		enabled = false,
-		config = function()
-			require("yanky").setup({})
-			vim.keymap.set({ "n", "x" }, "p", "<Plug>(YankyPutAfter)")
-			vim.keymap.set({ "n", "x" }, "P", "<Plug>(YankyPutBefore)")
-			vim.keymap.set({ "n", "x" }, "gp", "<Plug>(YankyGPutAfter)")
-			vim.keymap.set({ "n", "x" }, "gP", "<Plug>(YankyGPutBefore)")
-			vim.keymap.set("n", "<c-n>", "<Plug>(YankyCycleForward)")
-			vim.keymap.set("n", "<c-p>", "<Plug>(YankyCycleBackward)")
-		end,
+		"nvim-treesitter/nvim-treesitter",
+		event = "VeryLazy",
+		build = ":TSUpdate",
+		opts = {
+			highlight = {
+				enable = false,
+			},
+			ensure_installed = {
+				"typescript",
+				"tsx",
+			},
+			-- incremental_selection = {
+			-- 	enable = true,
+			-- 	keymaps = {
+			-- 		init_selection = "<CR>",
+			-- 		node_incremental = "<CR>",
+			-- 	},
+			-- },
+			-- context_commentstring = {
+			-- 	enable = true,
+			-- 	enable_autocmd = false,
+			-- },
+		},
 	},
 	{
-		"nvim-treesitter/nvim-treesitter",
-		build = ":TSUpdate",
-		config = function()
-			require("nvim-treesitter.configs").setup({
-				ensure_installed = {
-					"lua",
-					"vim",
-					"typescript",
-					"org",
-					"tsx",
-				},
-				-- context_commentstring = {
-				-- 	enable = true,
-				-- 	enable_autocmd = false,
-				-- },
-				incremental_selection = {
-					enable = true,
-					keymaps = {
-						init_selection = "<CR>",
-						node_incremental = "<CR>",
-					},
-				},
-			})
-		end,
+		"windwp/nvim-ts-autotag",
+		event = "VeryLazy",
+		opts = {},
 	},
 })
 
@@ -118,16 +127,37 @@ local function getVisualSelection()
 	return start, finish
 end
 
-vim.keymap.set("n", "<space>", ":call VSCodeNotify('vspacecode.space')<CR>")
+vim.keymap.set("n", "<space>", function()
+	vscode.action("vspacecode.space")
+end)
+vim.keymap.set("n", "<C-N>", function()
+	vscode.action("workbench.action.toggleSidebarVisibility")
+end)
 vim.keymap.set("x", "<space>", function()
 	local start, finish = getVisualSelection()
 	if vim.fn.mode() == "V" then
-		require("vscode-neovim").notify_range("vspacecode.space", start[2], finish[2], 1)
+		vscode.action("vspacecode.space", {
+			range = {
+				start[2],
+				finish[2],
+			},
+		})
 	else
-		require("vscode-neovim").notify_range_pos("vspacecode.space", start[2], finish[2], start[3], finish[3], 1)
+		vscode.action("vspacecode.space", {
+			range = {
+				start = {
+					line = start[2],
+					character = start[3],
+				},
+				["end"] = {
+					line = finish[2],
+					character = finish[3],
+				},
+			},
+		})
 	end
 end)
 
 vim.keymap.set("n", "g;", function()
-	vim.fn.VSCodeNotify("workbench.action.navigateToLastEditLocation")
+	vscode.action("workbench.action.navigateToLastEditLocation")
 end)

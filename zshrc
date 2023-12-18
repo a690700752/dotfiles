@@ -150,6 +150,7 @@ function git-cfg-user() {
 alias proxy='export https_proxy=http://127.0.0.1:7890 http_proxy=http://127.0.0.1:7890 all_proxy=socks5://127.0.0.1:7890'
 alias noproxy='export https_proxy= http_proxy= all_proxy='
 proxy
+export no_proxy=::1,127.0.0.1
 alias ssh="env -i TERM=xterm-256color ssh"
 alias rm='safe-rm'
 # 

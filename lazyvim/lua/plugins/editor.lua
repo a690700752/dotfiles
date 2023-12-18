@@ -99,5 +99,12 @@ return {
     keys = {
       { "S", mode = { "x" }, false },
     },
+    opts = {
+      modes = {
+        search = {
+          enabled = false,
+        },
+      },
+    },
   },
 }
