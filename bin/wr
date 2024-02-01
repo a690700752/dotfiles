@@ -1,0 +1,54 @@
+#!/usr/bin/env python3
+
+import sys
+from prettytable import PrettyTable
+import argparse
+import lql
+
+
+def try_parse_number(s):
+    try:
+        if "." in s:
+            return float(s)
+        return int(s)
+    except ValueError:
+        return s
+
+
+def print_table(table):
+    x = PrettyTable()
+
+    max_len = 0
+    for row in table:
+        if len(row) > max_len:
+            max_len = len(row)
+
+    x.field_names = range(max_len)
+    for row in table:
+        if len(row) < max_len:
+            row += [""] * (max_len - len(row))
+        x.add_row(row)
+
+    print(x)
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("query", nargs="?")
+    args = parser.parse_args()
+
+    table = []
+
+    for index, line in enumerate(sys.stdin):
+        l = [index]
+        l.extend([try_parse_number(x) for x in line.strip().split()])
+        table.append(l)
+
+    if args.query:
+        print_table(lql.eval_str(args.query)(table))
+    else:
+        print_table(table)
+
+
+if __name__ == "__main__":
+    main()
