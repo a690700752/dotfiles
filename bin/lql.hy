@@ -19,8 +19,12 @@
     (if (< (len arr) n)
         (+ arr (* [val] (- n (len arr))))
         arr))
+        
+(defn empty? [arr]
+    (= (len arr) 0))
 
 (defn print-table [table]
+    (if (empty? table) None
     (let [x (PrettyTable)
         max-len (max (map (fn [row] (len row)) table))
     ] 
@@ -28,12 +32,15 @@
         (for [row table]
             (.add_row x (pad-arr row max-len ""))
         )
-        (print x))
+        (print x)))
 )
 
 (defn main [] 
     (defmacro filter [func iter]
         `(builtin-filter (fn [it] ~func) ~iter))
+        
+    (defn construct-query [in]
+        (+ "(" in " table)"))
     
     (let [parser (ArgumentParser)]
 
@@ -45,7 +52,7 @@
             (list (map try-parse-number (.split (get val 1))))
                                 )))
         (if args.query 
-            (print-table (list (filter (> (get it 0) 5) table)))
+            (print-table (list (hy.eval (hy.read (construct-query args.query)) :macros (local-macros))))
             (print-table table))
     )
 )
