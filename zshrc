@@ -1,3 +1,6 @@
+# my note
+#   curl https://github.com/a690700752.keys >> ~/.ssh/authorized_keys
+#
 # zmodload zsh/zprof
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
@@ -83,8 +86,8 @@ ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=180'
 # Add wisely, as too many plugins slow down shell startup.
 
 plugins=(
-  git 
-  z 
+  git
+  z
   zsh-autosuggestions
   colored-man-pages
   vscode
@@ -127,7 +130,7 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias vim='nvim'
 alias t='todo.sh -c'
-alias gcz='npx git-cz'
+alias gcz='npx -g git-cz'
 
 [[ ! -f ~/.p.env ]] || source ~/.p.env
 
@@ -154,6 +157,9 @@ export no_proxy=::1,127.0.0.1
 # alias ssh="env -i TERM=xterm-256color ssh"
 alias ssh="kitty +kitten ssh"
 alias rm='safe-rm'
+function ssh-home() {
+  env -i TERM=xterm-256color ssh home
+}
 # 
 # adb
 #
