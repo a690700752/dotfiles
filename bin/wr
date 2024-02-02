@@ -1,54 +1,74 @@
-#!/usr/bin/env python3
+#!/usr/bin/env hy
 
-import sys
-from prettytable import PrettyTable
-import argparse
-import lql
+(import prettytable [PrettyTable])
+(import argparse [ArgumentParser])
+(import sys)
+(import re)
+(require hyrule [->>])
 
+(setv builtin-filter filter)
 
-def try_parse_number(s):
-    try:
-        if "." in s:
-            return float(s)
-        return int(s)
-    except ValueError:
-        return s
+(defn try-parse-number [s]
+    (try
+        (if (in "." s) 
+            (float s) 
+            (int s))
+        (except [ValueError]
+            s))
+)
 
+(defn pad-arr [arr n val]
+    (if (< (len arr) n)
+        (+ arr (* [val] (- n (len arr))))
+        arr))
+        
+(defn empty? [arr]
+    (= (len arr) 0))
 
-def print_table(table):
-    x = PrettyTable()
+(defn print-table [table]
+    (if (empty? table) None
+    (let [x (PrettyTable)
+        max-len (max (map (fn [row] (len row)) table))
+    ] 
+        (setv x.field_names (range max-len)) 
+        (for [row table]
+            (.add_row x (pad-arr row max-len ""))
+        )
+        (print x)))
+)
 
-    max_len = 0
-    for row in table:
-        if len(row) > max_len:
-            max_len = len(row)
+(defn list? [x]
+    (= (type x) list))
+    
+(defn m-get [col key]
+    (if (list? col)
+    (get col (int key))
+    (.get col key)))
 
-    x.field_names = range(max_len)
-    for row in table:
-        if len(row) < max_len:
-            row += [""] * (max_len - len(row))
-        x.add_row(row)
+(defn construct-query [in]
+    (->> (+ "(" in " table)")
+        (re.sub r"it\.(\w+)" "(m-get it \"\\1\")")))
 
-    print(x)
+(defn eval-query [query table]
+    (defmacro filter [func iter]
+        `(builtin-filter (fn [it] ~func) ~iter))
+        
+    (list (hy.eval (hy.read (construct-query query)) :macros (local-macros)))
+)
 
+(defn main [] 
+    (let [parser (ArgumentParser)]
+        (.add_argument parser "query" :nargs "?")
+        (setv args (.parse_args parser))
+        (setv table [])
+        (for [val (enumerate sys.stdin)] 
+            (.append table (+ [(get val 0)]
+            (list (map try-parse-number (.split (get val 1))))
+                                )))
+        (if args.query 
+            (print-table (eval-query args.query table))
+            (print-table table))
+    )
+)
 
-def main():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("query", nargs="?")
-    args = parser.parse_args()
-
-    table = []
-
-    for index, line in enumerate(sys.stdin):
-        l = [index]
-        l.extend([try_parse_number(x) for x in line.strip().split()])
-        table.append(l)
-
-    if args.query:
-        print_table(lql.eval_str(args.query)(table))
-    else:
-        print_table(table)
-
-
-if __name__ == "__main__":
-    main()
+(main)
