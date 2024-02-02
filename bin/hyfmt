@@ -1,0 +1,26 @@
+#!/usr/bin/env hy
+
+(import re)
+(require hyrule [-> ->>])
+
+(setv STATE_INIT "STATE_INIT"
+    )
+
+(defn format [src] 
+    (setv i 0
+     state STATE_INIT
+     (while 
+      (< i (len src))
+       (cond 
+        (= state STATE_INIT)
+        (do 
+         
+        )
+       )
+      )
+    )
+)
+
+(setv code #[[ (filter (fn hehe [1 2 3] (print "he \n he"))) ]])
+
+(print code)
