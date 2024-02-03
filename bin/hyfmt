@@ -1,4 +1,5 @@
 #!/usr/bin/env hy
+
 (import
   re)
 (import
@@ -11,7 +12,8 @@
     as->
     block
     ap-map
-    case])
+    case
+    let+])
 (import
   hyrule
   [inc
@@ -48,7 +50,7 @@
 (setv
   String
   (re.compile
-    r"r?\"([^\\\"]|\\.)*\""))
+    r"(r|f)?\"([^\\\"]|\\.)*\""))
 (setv
   Punctuation
   (re.compile
@@ -68,384 +70,159 @@
     x
     False
     True))
-(defn
-  first
-  [x]
-  (if
-    (empty?
-      x)
-    None
-    (get
-      x
-      0)))
-(defn
-  last
-  [x]
-  (if
-    (empty?
-      x)
-    None
-    (get
-      x
-      -1)))
-(defn
-  tokenize
-  [input]
-  (setv
-    tokens
-    [])
-  (when
-    (input.startswith
-      "#!")
-    (setv
-      line-idx
-      (input.find
-        "\n"))
-    (when
-      (=
-        -1
-        line-idx)
-      (setv
-        line-idx
-        (len
-          input)))
-    (setv
-      val
-      (cut
-        input
-        line-idx))
-    (tokens.append
-      (dict
-        :type
-        TOKEN_SHEBANG
-        :val
-        val))
-    (setv
-      input
-      (cut
-        input
-        line-idx
-        None)))
-  (while
-    input
-    (setv
-      res
-      None)
-    (when
-      (not
-        res)
-      (setv
-        res
-        (BracketStringStart.match
-          input))
-      (when
-        res
-        (setv
-          tag
-          (res.group
-            1))
-        (setv
-          pos-start
-          (input.find
-            (+
-              "]"
-              tag
-              "]")))
-        (if
-          (=
-            -1
-            pos-start)
-          (setv
-            pos-end
-            (len
-              input))
-          (setv
-            pos-end
-            (+
-              pos-start
-              (len
-                (+
-                  "]"
-                  tag
-                  "]")))))
-        (setv
-          content
-          (cut
-            input
-            (.start
-              res)
-            pos-end))
-        (tokens.append
-          (dict
-            :type
-            TOKEN_BRACKET_STRING
-            :val
-            content))
-        (setv
-          input
-          (cut
-            input
-            pos-end
-            None))
+(defn first [x] (get x 0))
+(defn last [x] (get x -1))
+
+(defn tokenize [input]
+  (setv tokens [])
+  (setv line 0)
+
+  (when (input.startswith "#!")
+    (setv line_idx (input.find "\n"))
+    (when (= -1 line_idx)
+      (setv line_idx (len input)))
+    (setv val (cut input line_idx))
+    (tokens.append (dict :type TOKEN_SHEBANG :val val))
+    (setv input (cut input line_idx None)))
+
+  (while input 
+    (setv res None)
+
+    (when (not res)
+      (setv res (BracketStringStart.match input))
+      (when res
+        (setv tag (res.group 1))
+        (setv pos_start (input.find (+ "]" tag "]")))
+        (if (= -1 pos_start)
+          (setv pos_end (len input))
+          (setv pos_end (+ pos_start (len (+ "]" tag "]")))))
+        (setv content (cut input (.start res) pos_end))
+        (tokens.append (dict :type TOKEN_BRACKET_STRING :val content))
+        (setv input (cut input pos_end None))
         (continue)))
+
     (for
-      [c
-        [[Comment
-            TOKEN_COMMENT]
-          [Newline
-            TOKEN_NEWLINE]
-          [Whitespace
-            TOKEN_WHITESPACE]
-          [Punctuation
-            TOKEN_PUNCTUATION]
-          [String
-            TOKEN_STRING]
-          [Identifier
-            TOKEN_IDENTIFIER]]]
-      (setv
-        res
-        (.match
-          (get
-            c
-            0)
-          input))
-      (when
-        res
-        (tokens.append
-          (dict
-            :type
-            (get
-              c
-              1)
-            :val
-            (.group
-              res)))
-        (setv
-          input
-          (cut
-            input
-            (.end
-              res)
-            None))
+      [c [[Comment TOKEN_COMMENT]
+          [Newline TOKEN_NEWLINE (fn [] {:new_line (inc line)})]
+          [Whitespace TOKEN_WHITESPACE]
+          [Punctuation TOKEN_PUNCTUATION]
+          [String TOKEN_STRING]
+          [Identifier TOKEN_IDENTIFIER]]]
+      (setv res (.match (get c 0) input))
+      (when res
+        (tokens.append (dict :line line :type (get c 1) :val (.group res)))
+        (setv input (cut input (.end res) None))
+        (when (and (> (len c) 2) (get c 2))
+          (let+ [{new_line :new_line}  ((get c 2))]
+            (when (!= None new_line))
+            (setv line new_line)
+            )
+          )
+        
         (break)))
-    (when
-      (not
-        res)
-      (raise
-        (Exception
-          f
-          "Unexpected input: {input}"))))
-  tokens)
-(defn
-  print-tokens
-  [tokens]
-  (setv
-    res
-    "")
-  (setv
-    arg-idx-stack
-    [0])
-  (defn
-    get-arg-idx
-    []
-    (if
-      (empty?
-        arg-idx-stack)
-      0
-      (last
-        arg-idx-stack)))
-  (setv
-    indent
-    0)
-  (defn
-    get-indent-space
-    []
-    (*
-      " "
-      indent))
-  (for
-    [token
-      tokens]
-    (case
-      (get
-        token
-        "type")
-      TOKEN_SHEBANG
-      (setv
-        res
-        (+
-          res
-          (get
-            token
-            "val")
-          "\n"
-          (get-indent-space)))
-      TOKEN_COMMENT
-      (setv
-        res
-        (+
-          res
-          (get
-            token
-            "val")
-          "\n"
-          (get-indent-space)));; TOKEN_NEWLINE (setv res (+ res (get token "val") (get-indent-space)))
+        
+    (when (not res)
+      (raise (Exception f"Unexpected input: {input}")))) tokens)
+
+(defn code_last_char [code]
+  (if code (last code) None))
+  
+(assert (= (code_last_char "abc") "c"))
+(assert (= (code_last_char "") None))
+  
+(defn code_last_line [code]
+  (if (not code) ""
+      (cut code (inc (.rfind code "\n")) None))) 
+  
+(assert (= (code_last_line "abc\ndef") "def"))  
+(assert (= (code_last_line "abc") "abc"))
+(assert (= (code_last_line "") ""))
+  
+(defn append_identifier [code identifier]
+  (if (in (code_last_char code) ["(" "[" "{"])
+      (+ code identifier)
+      (+ code " " identifier)
+    )
+)
+
+(assert (= (append_identifier "(" "filter") "(filter"))
+(assert (= (append_identifier "(filter" "name") "(filter name"))
+
+(defn append_newline [code indent]
+  (+ code "\n" (* " " indent)))
+
+(assert (= (append_newline "(filter" 3) "(filter\n   "))
+
+(defn append_shebang [code shebang] (+ code shebang))
+
+(assert (= (append_shebang "" "#!/usr/bin/env python") "#!/usr/bin/env python"))
+
+(defn append_comment [code comment] (+ code comment))
+(assert (= (append_comment "" "; this is a comment") "; this is a comment"))
+
+(defn append_puctuation [code punctuation] 
+  (if (in punctuation [")" "]" "}"])
+      (+ (.rstrip code) punctuation)
+      (if (in (code_last_char code) ["(" " " "[" "{" "\n" None])
+          (+ code punctuation)
+          (+ code " " punctuation)
+      )))
       
-      TOKEN_PUNCTUATION
-      (let
-        [arg-idx
-          (get-arg-idx)
-          val
-          (get
-            token
-            "val")]
-        (cond
-          (in
-            val
-            ["("
-              "["
-              "{"])
-          (do
-            (when
-              (>
-                arg-idx
-                0)
-              (setv
-                res
-                (+
-                  res
-                  "\n"
-                  (get-indent-space))))
-            (setv
-              res
-              (+
-                res
-                val))
-            (setv
-              (get
-                arg-idx-stack
-                -1)
-              (inc
-                arg-idx))
-            (arg-idx-stack.append
-              0)
-            (setv
-              indent
-              (+
-                indent
-                2)))
-          (in
-            val
-            [")"
-              "]"
-              "}"])
-          (do
-            (setv
-              res
-              (+
-                res
-                val))
-            (.pop
-              arg-idx-stack)
-            (setv
-              indent
-              (-
-                indent
-                2)))
-          True
-          (raise
-            (Exception
-              f
-              "Unexpected punctuation: {val}"))))
-      TOKEN_STRING
-      (let
-        [arg-idx
-          (get-arg-idx)
-          val
-          (get
-            token
-            "val")]
-        (when
-          (>
-            arg-idx
-            0)
-          (setv
-            res
-            (+
-              res
-              "\n"
-              (get-indent-space))))
-        (setv
-          res
-          (+
-            res
-            val))
-        (setv
-          (get
-            arg-idx-stack
-            -1)
-          (inc
-            arg-idx)))
-      TOKEN_IDENTIFIER
-      (let
-        [arg-idx
-          (get-arg-idx)
-          val
-          (get
-            token
-            "val")]
-        (when
-          (>
-            arg-idx
-            0)
-          (setv
-            res
-            (+
-              res
-              "\n"
-              (get-indent-space))))
-        (setv
-          res
-          (+
-            res
-            val))
-        (setv
-          (get
-            arg-idx-stack
-            -1)
-          (inc
-            arg-idx)))
-      TOKEN_BRACKET_STRING
-      (let
-        [arg-idx
-          (get-arg-idx)
-          val
-          (get
-            token
-            "val")]
-        (when
-          (>
-            arg-idx
-            0)
-          (setv
-            res
-            (+
-              res
-              "\n"
-              (get-indent-space))))
-        (setv
-          res
-          (+
-            res
-            val))
-        (setv
-          (get
-            arg-idx-stack
-            -1)
-          (inc
-            arg-idx)));; TOKEN_WHITESPACE "Whitespace"
+(assert (= (append_puctuation "" "(") "("))
+(assert (= (append_puctuation "\n" "(") "\n("))
+(assert (= (append_puctuation "(filter" "(") "(filter ("))
+(print (append_puctuation "(filter name\n    " ")"))
+(assert (= (append_puctuation "(filter name\n    " ")") "(filter name)"))
+
+(defn append_string [code string]
+  (if (in (code_last_char code) ["(" "[" "{" "\n" None])
+      (+ code string)
+      (+ code " " string)))
+      
+(assert (= (append_string "" "\"hello\"") "\"hello\""))
+(assert (= (append_string "hello" "\"world\"") "hello \"world\""))
+
+(defn open_punctuation? [punctuation]
+  (in punctuation ["(" "[" "{"]))
+  
+(assert (= (open_punctuation? "(") True))
+(assert (= (open_punctuation? "}") False))
+(assert (= (open_punctuation? "") False))
+
+(defn print_tokens [tokens]
+  (setv res "")
+  (setv first_arg None)
+  (setv last_puctuation None)
+  (setv indent_stack [])
+  
+  (defn get_indent [] (if (empty? indent_stack) 0 (last indent_stack)))
+  
+  (for [token tokens]
+    (let+ [type :type line :line val :val] 
+      (cond 
+        (= type TOKEN_SHEBANG) (setv res (append_shebang res val))
+        (= type TOKEN_COMMENT) (setv res (append_comment res val))
+        (= type TOKEN_PUNCTUATION) 
+        (do (setv res (append_puctuation res val))
+            (if (open_punctuation? val)
+                (if (open_punctuation? last_puctuation)
+                    (do (indent_stack.push (+ 2 (get_indent))))
+                    (pass))
+                (setv last_puctuation val))
+            )
+        (= type TOKEN_STRING) (setv res (append_string res val))
+        (= type TOKEN_IDENTIFIER) 
+        (do (setv res (append_identifier res val))
+            (when (not first_arg) 
+                  (setv first_arg val))
+        )
+        (= type TOKEN_BRACKET_STRING) (setv res (append_string res val))
+        (= type TOKEN_NEWLINE) (setv res (append_newline res (get_indent))))
       ))
-  res)
+  res
+)
+  
+
 (let
   [parser
     (ArgumentParser)]
@@ -463,34 +240,13 @@
     args
     (.parse_args
       parser))
-  (for
-    [path
-      args.path]
-    (with
-      [f
-        (open
-          path
-          (if
-            args.w
-            "r+"
-            "r"))]
-      (setv
-        code
-        (.read
-          f))
-      (setv
-        formatted
-        (print-tokens
-          (tokenize
-            code)))
-      (if
-        args.w
-        (do
-          (.seek
-            f
-            0)
-          (.write
-            f
-            formatted))
-        (print
-          formatted)))))
+  (for [path args.path]
+    (with [f (open path (if args.w "r+" "r"))]
+      (setv code (.read f))
+      (print (.join "\n" (ap-map (str it) (tokenize code)))
+      ;; (setv formatted (print_tokens (tokenize code)))
+      ;; (if
+      ;;   args.w
+      ;;   (do (.seek f 0) (.write f formatted))
+      ;;   (print formatted))
+        ))))

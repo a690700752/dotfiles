@@ -1,16 +1,15 @@
-(import
- re
+(import re
  haha
  hehe)
-(defn
- hello
+
+(defn hello
  []
  (print
   "hello")
  (print
   "world"))
-(defn
- haha
+
+(defn haha
  []
  (print
   "haha"))
