@@ -1,26 +1,84 @@
 #!/usr/bin/env hy
 
 (import re)
-(require hyrule [-> ->>])
+(require hyrule [-> ->> as-> block ap-map])
+(import hyrule [inc])
 
-(setv STATE_INIT "STATE_INIT"
-    )
-
-(defn format [src] 
-    (setv i 0
-     state STATE_INIT
-     (while 
-      (< i (len src))
-       (cond 
-        (= state STATE_INIT)
-        (do 
-         
-        )
-       )
-      )
-    )
+(setv TOKEN_IDENTIFIER "Identifier"
+    TOKEN_PUNCTUATION "Punctuation"
+    TOKEN_WHITESPACE "Whitespace"
+    TOKEN_STRING "String"
+    TOKEN_BRACKET_STRING "BracketString"
+    TOKEN_COMMENT "Comment"
+    TOKEN_SHEBANG "Shebang"
 )
 
-(setv code #[[ (filter (fn hehe [1 2 3] (print "he \n he"))) ]])
+(setv Whitespace (re.compile r"\s+"))
+(setv Identifier (re.compile r"\S+"))
+(setv String (re.compile r"\"([^\\\"]|\\.)*\""))
+(setv Punctuation (re.compile r"[\{\}\[\]\(\)]"))
+(setv BracketStringStart (re.compile r"#\[(\w*)\["))
+(setv Comment (re.compile r";.*"))
+
+(defn empty? [x] (if x False True))
+
+(defn first [x]
+    (if (empty? x) None (get x 0)))
+    
+(defn tokenize [input]
+    (setv tokens [])
+    
+    (when (input.startswith "#!")
+        (setv line-idx (input.find "\n"))
+        (when (= -1 line-idx) 
+            (setv line-idx (len input))
+        )
+        (setv val (cut input line-idx))
+        (tokens.append (dict :type TOKEN_SHEBANG :val val)))
+        (setv input (cut input line-idx None))
+    
+    (while input 
+        (setv res None)
+        
+        (when (not res)
+            (setv res (BracketStringStart.match input))
+            (when res
+             (setv tag (res.group 1))
+             (setv pos-start (input.find (+ "]" tag "]")))
+             (if (= -1 pos-start) 
+                (setv pos-end (len input))
+                (setv pos-end (+ pos-start (len (+ "]" tag "]"))))
+             )
+             
+             (setv content (cut input (.start res) pos-end))
+             (tokens.append (dict :type TOKEN_BRACKET_STRING :val content))
+             (setv input (cut input pos-end None))
+             (continue)
+            )
+        )
+        
+        (for [c [[Comment TOKEN_COMMENT] [Whitespace TOKEN_WHITESPACE] [Punctuation TOKEN_PUNCTUATION] [String TOKEN_STRING] [Identifier TOKEN_IDENTIFIER]]]
+         (setv res (.match (get c 0) input))
+         (when res
+          (tokens.append (dict :typ (get c 1) :val (.group res)))
+          (setv input (cut input (.end res) None))
+          (break)
+         )
+        )
+        
+        (when (not res)
+          (raise (Exception f"Unexpected input: {input}"))
+        )
+    )
+    tokens
+    )
+
+(setv code #[A[
+#!/usr/bin/env hy
+
+; haha
+(print #[[ haha ]])
+]A])
 
 (print code)
+(print (.join "\n" (ap-map (str it) (tokenize code))))
