@@ -1,21 +1,24 @@
 #!/usr/bin/env hy
 
 (import re)
-(require hyrule [-> ->> as-> block ap-map])
-(import hyrule [inc])
+(require hyrule [-> ->> as-> block ap-map case])
+(import hyrule [inc dec])
 
-(setv TOKEN_IDENTIFIER "Identifier"
+(setv 
+    TOKEN_IDENTIFIER "Identifier"
     TOKEN_PUNCTUATION "Punctuation"
     TOKEN_WHITESPACE "Whitespace"
+    TOKEN_NEWLINE "Newline"
     TOKEN_STRING "String"
     TOKEN_BRACKET_STRING "BracketString"
     TOKEN_COMMENT "Comment"
     TOKEN_SHEBANG "Shebang"
 )
 
-(setv Whitespace (re.compile r"\s+"))
-(setv Identifier (re.compile r"\S+"))
-(setv String (re.compile r"\"([^\\\"]|\\.)*\""))
+(setv Whitespace (re.compile r"[ \t]+"))
+(setv Newline (re.compile r"\n"))
+(setv Identifier (re.compile r"[0-9a-zA-Z_\-+><=?.:*]+"))
+(setv String (re.compile r"r?\"([^\\\"]|\\.)*\""))
 (setv Punctuation (re.compile r"[\{\}\[\]\(\)]"))
 (setv BracketStringStart (re.compile r"#\[(\w*)\["))
 (setv Comment (re.compile r";.*"))
@@ -24,6 +27,9 @@
 
 (defn first [x]
     (if (empty? x) None (get x 0)))
+    
+(defn last [x]
+    (if (empty? x) None (get x -1)))
     
 (defn tokenize [input]
     (setv tokens [])
@@ -34,8 +40,8 @@
             (setv line-idx (len input))
         )
         (setv val (cut input line-idx))
-        (tokens.append (dict :type TOKEN_SHEBANG :val val)))
-        (setv input (cut input line-idx None))
+        (tokens.append (dict :type TOKEN_SHEBANG :val val))
+        (setv input (cut input line-idx None)))
     
     (while input 
         (setv res None)
@@ -57,10 +63,10 @@
             )
         )
         
-        (for [c [[Comment TOKEN_COMMENT] [Whitespace TOKEN_WHITESPACE] [Punctuation TOKEN_PUNCTUATION] [String TOKEN_STRING] [Identifier TOKEN_IDENTIFIER]]]
+        (for [c [[Comment TOKEN_COMMENT] [Newline TOKEN_NEWLINE] [Whitespace TOKEN_WHITESPACE] [Punctuation TOKEN_PUNCTUATION] [String TOKEN_STRING] [Identifier TOKEN_IDENTIFIER]]]
          (setv res (.match (get c 0) input))
          (when res
-          (tokens.append (dict :typ (get c 1) :val (.group res)))
+          (tokens.append (dict :type (get c 1) :val (.group res)))
           (setv input (cut input (.end res) None))
           (break)
          )
@@ -73,12 +79,74 @@
     tokens
     )
 
-(setv code #[A[
-#!/usr/bin/env hy
 
-; haha
-(print #[[ haha ]])
-]A])
+(defn print-tokens [tokens]
+    (setv res "")
+    (setv arg-idx-stack [0])
+    
+    (defn get-arg-idx []
+      (if (empty? arg-idx-stack) 0 (last arg-idx-stack)))
 
-(print code)
-(print (.join "\n" (ap-map (str it) (tokenize code))))
+    (setv indent 0)
+
+    (defn get-indent-space []
+      (* " " indent))
+    
+    (for [token tokens]
+        (case (get token "type")
+        TOKEN_SHEBANG (setv res (+ res (get token "val") "\n" (get-indent-space)))
+        TOKEN_COMMENT (setv res (+ res (get token "val") "\n" (get-indent-space)))
+        ;; TOKEN_NEWLINE (setv res (+ res (get token "val") (get-indent-space)))
+        TOKEN_PUNCTUATION (let [arg-idx (get-arg-idx) val (get token "val")]
+          (cond 
+           (in val ["(" "[" "{"]) 
+           (do 
+            (when (> arg-idx 0)
+             (setv res (+ res "\n" (get-indent-space)))
+            )
+            (setv res (+ res val))
+            (setv (get arg-idx-stack -1) (inc arg-idx))
+
+            (arg-idx-stack.append 0)
+            (setv indent (inc indent))
+           )
+           (in val [")" "]" "}"])
+           (do 
+            (setv res (+ res val))
+            (.pop arg-idx-stack)
+            (setv indent (dec indent))
+           )
+           True (raise (Exception f"Unexpected punctuation: {val}")))
+        )
+        TOKEN_STRING (let [arg-idx (get-arg-idx) val (get token "val")] 
+            (when (> arg-idx 0)
+             (setv res (+ res "\n" (get-indent-space)))
+            )
+            (setv res (+ res val))
+            (setv (get arg-idx-stack -1) (inc arg-idx))
+        )
+        TOKEN_IDENTIFIER (let [arg-idx (get-arg-idx) val (get token "val")]
+            (when (> arg-idx 0)
+             (setv res (+ res "\n" (get-indent-space)))
+            )
+            (setv res (+ res val))
+            (setv (get arg-idx-stack -1) (inc arg-idx))
+        )
+        TOKEN_BRACKET_STRING (let [arg-idx (get-arg-idx) val (get token "val")]
+            (when (> arg-idx 0)
+             (setv res (+ res "\n" (get-indent-space)))
+            )
+            (setv res (+ res val))
+            (setv (get arg-idx-stack -1) (inc arg-idx))
+        )
+    ;; TOKEN_WHITESPACE "Whitespace"
+        )
+    )
+    res
+)
+
+(with [o (open "hyfmt" "r")]
+    (setv code (.read o))
+    ;; (print (.join "\n" (ap-map (str it) (tokenize code))))
+    (print (print-tokens (tokenize code))))
+
