@@ -216,12 +216,12 @@
               (setv code
                     (with [f (open path "r")] (.read f)))
               (setv formatted (print_tokens (tokenize code)))
-              (if
-                  args.w
-                  (do
-                      (with [f (open path "w")]
-                            (.write f formatted)))
-                  (print formatted)))
+              (if args.w
+                  (when (!= code formatted)
+                        (do (with [f (open path "w")]
+                                  (.write f formatted))))
+                  (print formatted "end")))
          (do
              (setv code (.read sys.stdin))
-             (print (print_tokens (tokenize code))))))
+             (print (print_tokens (tokenize code))
+                    :end ""))))
