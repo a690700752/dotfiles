@@ -1,6 +1,7 @@
 #!/usr/bin/env hy
 
 (import re)
+(import sys)
 (import argparse [ArgumentParser])
 (require hyrule [->
                   ->>
@@ -26,7 +27,7 @@
 (setv Newline (re.compile r"\n"))
 (setv Identifier (re.compile r"[0-9a-zA-Z_\-+><=?.:*!]+"))
 (setv String (re.compile r"(r|f)?\"([^\\\"]|\\.)*\""))
-(setv Punctuation (re.compile r"[\{\}\[\]\(\)]"))
+(setv Punctuation (re.compile r"[\{\}\[\]\(\)`~]"))
 (setv BracketStringStart (re.compile r"#\[(\w*)\["))
 (setv Comment (re.compile r";.*"))
 
@@ -117,11 +118,16 @@
 (assert (= (append_comment "" "; this is a comment") "; this is a comment"))
 
 (defn append_puctuation [code punctuation]
-      (setv n_code (if (in punctuation [")" "]" "}"])
-                       (+ (.rstrip code) punctuation)
-                       (if (in (code_last_char code) ["(" " " "[" "{" "\n" None])
-                           (+ code punctuation)
-                           (+ code " " punctuation))))
+      (setv n_code
+            (cond
+                  (in punctuation [")" "]" "}"])
+                  (+ (.rstrip code) punctuation)
+                  (in punctuation ["(" "[" "{" "`" "~"])
+                  (if (in (code_last_char code) ["(" " " "[" "{" "\n" None])
+                      (+ code punctuation)
+                      (+ code " " punctuation))
+                  True (raise (Exception f"Unexpected punctuation: {punctuation}"))))
+      
       
       (setv col (dec (len (code_last_line n_code))))
       
@@ -204,13 +210,18 @@
      (.add_argument parser "path" :nargs "*")
      (.add_argument parser "-w" :action "store_true")
      (setv args (.parse_args parser))
-     (for [path args.path]
-          (setv code
-                (with [f (open path "r")] (.read f)))
-          (setv formatted (print_tokens (tokenize code)))
-          (if
-              args.w
-              (do
-                  (with [f (open path "w")]
-                        (.write f formatted)))
-              (print formatted))))
+     
+     (if args.path
+         (for [path args.path]
+              (setv code
+                    (with [f (open path "r")] (.read f)))
+              (setv formatted (print_tokens (tokenize code)))
+              (if
+                  args.w
+                  (do
+                      (with [f (open path "w")]
+                            (.write f formatted)))
+                  (print formatted)))
+         (do
+             (setv code (.read sys.stdin))
+             (print (print_tokens (tokenize code))))))
