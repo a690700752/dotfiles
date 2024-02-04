@@ -1,5 +1,4 @@
-(import re haha (get
-             ddd "name"))
+(import re haha (get ddd "name"))
 
 (defn hello
       []
