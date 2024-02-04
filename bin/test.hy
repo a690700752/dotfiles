@@ -1,15 +1,13 @@
-(import re
- haha
- hehe)
+(import re haha (get
+             ddd "name"))
 
 (defn hello
- []
- (print
-  "hello")
- (print
-  "world"))
+      []
+      (print "hello")
+      (print
+             "world"))
 
 (defn haha
- []
- (print
-  "haha"))
+      []
+      (print
+             "haha"))
