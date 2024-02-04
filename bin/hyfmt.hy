@@ -32,8 +32,12 @@
 (setv Comment (re.compile r";.*"))
 
 (defn empty? [x] (if x False True))
-(defn first [x] (get x 0))
-(defn last [x] (get x -1))
+(defn first [x] (if x (get x 0) None))
+(defn last [x] (if x (get x -1) None))
+
+(assert (= (last None) None))
+(assert (= (last "abc") "c"))
+(assert (= (last "") None))
 
 (defn tokenize [input]
       (setv tokens [])
@@ -83,22 +87,16 @@
              (when (not res)
                    (raise (Exception f"Unexpected input: {input}")))) tokens)
 
-(defn code_last_char [code]
-      (if code (last code) None))
-
-(assert (= (code_last_char "abc") "c"))
-(assert (= (code_last_char "") None))
-
-(defn code_last_line [code]
+(defn last_line [code]
       (if (not code) ""
           (cut code (inc (.rfind code "\n")) None)))
 
-(assert (= (code_last_line "abc\ndef") "def"))
-(assert (= (code_last_line "abc") "abc"))
-(assert (= (code_last_line "") ""))
+(assert (= (last_line "abc\ndef") "def"))
+(assert (= (last_line "abc") "abc"))
+(assert (= (last_line "") ""))
 
 (defn append_identifier [code identifier]
-      (if (in (code_last_char code) ["(" "[" "{" " " "\n" None])
+      (if (in (last code) ["(" "[" "{" " " "\n" None])
           (+ code identifier)
           (+ code " " identifier)))
 
@@ -123,16 +121,15 @@
                   (in punctuation [")" "]" "}"])
                   (+ (.rstrip code) punctuation)
                   (in punctuation ["(" "[" "{" "`" "~"])
-                  (if (in (code_last_char code) ["(" " " "[" "{" "\n" None])
+                  (if (in (last code) ["(" " " "[" "{" "\n" None])
                       (+ code punctuation)
                       (+ code " " punctuation))
                   True (raise (Exception f"Unexpected punctuation: {punctuation}"))))
       
       
-      (setv col (dec (len (code_last_line n_code))))
+      (setv col (dec (len (last_line n_code))))
       
       (dict :code n_code :col col))
-
 
 (assert (= (append_puctuation "" "(") (dict :code "(" :col 0)))
 (assert (= (append_puctuation "\n" "(") (dict :code "\n(" :col 0)))
@@ -140,7 +137,7 @@
 (assert (= (append_puctuation "(filter name\n    " ")") (dict :code "(filter name)" :col 12)))
 
 (defn append_string [code string]
-      (if (in (code_last_char code) ["(" "[" "{" "\n" " " None])
+      (if (in (last code) ["(" "[" "{" "\n" " " None])
           (+ code string)
           (+ code " " string)))
 
@@ -154,19 +151,20 @@
 (assert (= (open_punctuation? "}") False))
 (assert (= (open_punctuation? "") False))
 
-(defn close_bracket? [bracket open]
-      (or (and (= open "(") (= bracket ")"))
-          (and (= open "[") (= bracket "]"))
-          (and (= open "{") (= bracket "}"))))
-
 (defn get_indent [bracket_stack]
       (if (empty? bracket_stack) 0
-          (let+ [{bracket "bracket" first_arg "first_arg" col "col"} (last bracket_stack)]
-                (+ col (if (= bracket "(")
-                           (if (or (empty? first_arg) (open_punctuation? first_arg))
-                               2
-                               (+ 2 (len first_arg)))
-                           2)))))
+          (let+ [{bracket "bracket"
+                   first_arg "first_arg"
+                   col "col"}
+                  (last bracket_stack)]
+
+                (+ col
+                   (if (= bracket "(")
+                       (if (or (empty? first_arg)
+                               (open_punctuation? first_arg))
+                           2
+                           (+ 2 (len first_arg)))
+                       2)))))
 
 (assert (= (get_indent []) 0))
 (assert (= (get_indent [(dict :col 2 :bracket "(" :first_arg "")]) 4))
@@ -178,8 +176,6 @@
       (setv code "")
       (setv bracket_stack [])
       
-      (defn get_last_bracket [] (if (empty? bracket_stack) None (last bracket_stack)))
-      
       (for [token tokens]
            (let+ [{type "type" line "line" val "val"} token]
                  (cond
@@ -189,16 +185,16 @@
                        (do
                            (setv+ {code "code" col "col"} (append_puctuation code val))
                            (if (open_punctuation? val)
-                               (do (when (and (get_last_bracket) (not (get (get_last_bracket) "first_arg")))
-                                         (setv (get (get_last_bracket) "first_arg") val))
+                               (do (when (and (last bracket_stack) (not (get (last bracket_stack) "first_arg")))
+                                         (setv (get (last bracket_stack) "first_arg") val))
                                    (bracket_stack.append (dict :bracket val :first_arg "" :line line :col col)))
                                (when bracket_stack (.pop bracket_stack))))
                        (= type TOKEN_STRING) (setv code (append_string code val))
                        (= type TOKEN_IDENTIFIER)
                        (do (setv code (append_identifier code val))
-                           (when (and (get_last_bracket)
-                                      (not (get (get_last_bracket) "first_arg")))
-                                 (setv (get (get_last_bracket) "first_arg") val)))
+                           (when (and (last bracket_stack)
+                                      (not (get (last bracket_stack) "first_arg")))
+                                 (setv (get (last bracket_stack) "first_arg") val)))
                        
                        (= type TOKEN_BRACKET_STRING) (setv code (append_string code val))
                        (= type TOKEN_NEWLINE) (setv code (append_newline code (get_indent bracket_stack))))))
