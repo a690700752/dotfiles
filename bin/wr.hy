@@ -47,9 +47,9 @@
 
 (defn eval_query [query table]
       (defmacro filter [func iter]
-                ` (builtin_filter (fn [it] ~ func) ~ iter))
-
-(list (hy.eval (hy.read (construct_query query)) :macros (local_macros))))
+                `(builtin_filter (fn [it] ~func) ~iter))
+      (list (hy.eval (hy.read (construct_query query))
+                     :macros (local_macros))))
 
 (defn main []
       (let [parser (ArgumentParser)]
