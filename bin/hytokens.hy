@@ -77,26 +77,39 @@
                    (raise (Exception f"Unexpected input: {input}")))) tokens)
 
 
+(defn get_end_pair [open_pair]
+      (cond
+            (= open_pair "(") ")"
+            (= open_pair "{") "}"
+            (= open_pair "[") "]"
+            True (raise (Exception f"Unexpected open pair: {open_pair}"))))
+
 (defn tokenize_tree_helper [cur_token wait_token tokens i]
+      (setv childs [])
       (while (< i (len tokens))
              (let+ [token (get tokens i)
                      {:keys [type val]} token]
-                   (pprint [token type val])
                    (cond
                          (and (= type (get wait_token :type))
-                              (= val (get wait_token :val))) (break)
-                         (and (= type TOKEN_PUNCTUATION) (in val ["(" "[" "{"])) ()
-                         (= token wait_token) ()))
-             (setv i (inc i))))
+                              (= val (get wait_token :val)))
+                         (break)
+                         (and (= type TOKEN_PUNCTUATION) (in val ["(" "[" "{"]))
+                         (let [node (tokenize_tree_helper token {:type TOKEN_PUNCTUATION :val (get_end_pair val)} tokens (inc i))]
+                              (childs.append node)
+                              (setv i (inc (get node :i))))
+                         True (do (childs.append token) (+= i 1)))))
+      {:open_token cur_token
+        :close_token (if (< i (len tokens)) (get tokens i) None)
+        :childs childs :i (inc i)})
 
 (defn tokenize_tree [tokens]
       (setv end_token {:line 0 :type TOKEN_END :val None})
       (tokens.append end_token)
       (tokenize_tree_helper {:line 0 :type TOKEN_START :val None}
                             end_token
-                            TOKEN_END tokens 0))
+                            tokens 0))
 
-(pprint (tokenize_tree (tokenize_seq #[[
+(tokenize_tree (tokenize_seq #[[
 (a b c)
 (d e f)
-]])))
+]]))

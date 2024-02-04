@@ -3,6 +3,7 @@
 (import re)
 (import sys)
 (import argparse [ArgumentParser])
+(import hytokens *)
 (require hyrule [->
                   ->>
                   as->
@@ -13,79 +14,6 @@
                   let+
                   setv+])
 (import hyrule [inc dec])
-
-(setv TOKEN_IDENTIFIER "Identifier"
-      TOKEN_PUNCTUATION "Punctuation"
-      TOKEN_WHITESPACE "Whitespace"
-      TOKEN_NEWLINE "Newline"
-      TOKEN_STRING "String"
-      TOKEN_BRACKET_STRING "BracketString"
-      TOKEN_COMMENT "Comment"
-      TOKEN_SHEBANG "Shebang")
-
-(setv Whitespace (re.compile r"[ \t]+"))
-(setv Newline (re.compile r"\n"))
-(setv Identifier (re.compile r"[0-9a-zA-Z_\-+><=?.:*!]+"))
-(setv String (re.compile r"(r|f)?\"([^\\\"]|\\.)*\""))
-(setv Punctuation (re.compile r"[\{\}\[\]\(\)`~]"))
-(setv BracketStringStart (re.compile r"#\[(\w*)\["))
-(setv Comment (re.compile r";.*"))
-
-(defn empty? [x] (if x False True))
-(defn first [x] (if x (get x 0) None))
-(defn last [x] (if x (get x -1) None))
-
-(assert (= (last None) None))
-(assert (= (last "abc") "c"))
-(assert (= (last "") None))
-
-(defn tokenize [input]
-      (setv tokens [])
-      (setv line 0)
-      
-      (when (input.startswith "#!")
-            (setv line_idx (input.find "\n"))
-            (when (= -1 line_idx)
-                  (setv line_idx (len input)))
-            (setv val (cut input line_idx))
-            (tokens.append (dict :type TOKEN_SHEBANG :val val))
-            (setv input (cut input line_idx None)))
-      
-      (while input
-             (setv res None)
-             
-             (when (not res)
-                   (setv res (BracketStringStart.match input))
-                   (when res
-                         (setv tag (res.group 1))
-                         (setv pos_start (input.find (+ "]" tag "]")))
-                         (if (= -1 pos_start)
-                             (setv pos_end (len input))
-                             (setv pos_end (+ pos_start (len (+ "]" tag "]")))))
-                         (setv content (cut input (.start res) pos_end))
-                         (tokens.append (dict :type TOKEN_BRACKET_STRING :val content))
-                         (setv input (cut input pos_end None))
-                         (continue)))
-             
-             (for [c [[Comment TOKEN_COMMENT]
-                       [Newline TOKEN_NEWLINE (fn [] {:new_line (inc line)})]
-                       [Whitespace TOKEN_WHITESPACE]
-                       [Punctuation TOKEN_PUNCTUATION]
-                       [String TOKEN_STRING]
-                       [Identifier TOKEN_IDENTIFIER]]]
-                  (setv res (.match (get c 0) input))
-                  (when res
-                        (tokens.append (dict :line line :type (get c 1) :val (.group res)))
-                        (setv input (cut input (.end res) None))
-                        (when (and (> (len c) 2) (get c 2))
-                              (let+ [{new_line :new_line} ((get c 2))]
-                                    (when (!= None new_line))
-                                    (setv line new_line)))
-                        
-                        (break)))
-             
-             (when (not res)
-                   (raise (Exception f"Unexpected input: {input}")))) tokens)
 
 (defn last_line [code]
       (if (not code) ""
@@ -175,11 +103,12 @@
 (assert (= (get_indent [(dict :col 2 :bracket "(" :first_arg "filter")]) 10))
 (assert (= (get_indent [(dict :col 2 :bracket "(" :first_arg "defn") (dict :col 5 :bracket "(" :first_arg "print")]) 12))
 
-(defn print_tokens [tokens]
+(defn print_token_tree [token_tree]
       (setv code "")
-      (setv bracket_stack [])
+
+      (setv code (append_puctuation code (get token_tree :open_token :val)))
       
-      (for [token tokens]
+      (for [token (.get token_tree :childs)]
            (let+ [{type "type" line "line" val "val"} token]
                  (cond
                        (= type TOKEN_SHEBANG) (setv code (append_shebang code val))
@@ -202,6 +131,8 @@
                        
                        (= type TOKEN_BRACKET_STRING) (setv code (append_string code val))
                        (= type TOKEN_NEWLINE) (setv code (append_newline code (get_indent bracket_stack))))))
+
+      (setv code (append_puctuation code (get token_tree :close_token :val)))
       code)
 
 
