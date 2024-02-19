@@ -27,7 +27,7 @@
 (setv Newline (re.compile r"\n"))
 (setv Identifier (re.compile r"[0-9a-zA-Z_\-+><=?.:*!]+"))
 (setv String (re.compile r"(r|f)?\"([^\\\"]|\\.)*\""))
-(setv Punctuation (re.compile r"[\{\}\[\]\(\)`~]"))
+(setv Punctuation (re.compile r"[\{\}\[\]\(\)`~']"))
 (setv BracketStringStart (re.compile r"#\[(\w*)\["))
 (setv Comment (re.compile r";.*"))
 
@@ -120,7 +120,7 @@
             (cond
                   (in punctuation [")" "]" "}"])
                   (+ (.rstrip code) punctuation)
-                  (in punctuation ["(" "[" "{" "`" "~"])
+                  (in punctuation ["(" "[" "{" "`" "~" "'"])
                   (if (in (last code) ["(" " " "[" "{" "\n" None "`"])
                       (+ code punctuation)
                       (+ code " " punctuation))
@@ -220,7 +220,7 @@
                   (when (!= code formatted)
                         (do (with [f (open path "w")]
                                   (.write f formatted))))
-                  (print formatted "end")))
+                  (print formatted)))
          (do
              (setv code (.read sys.stdin))
              (print (print_tokens (tokenize code))

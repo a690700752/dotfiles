@@ -1,6 +1,7 @@
 #!/usr/bin/env hy
 
 (import re)
+(import common *)
 (import sys)
 (import argparse [ArgumentParser])
 (import hytokens *)
@@ -86,8 +87,8 @@
       (if (empty? bracket_stack) 0
           (let+ [{bracket "bracket"
                    first_arg "first_arg"
-                   col "col"}
-                  (last bracket_stack)]
+                   col "col"
+                   (last bracket_stack)}]
                 
                 (+ col
                    (if (= bracket "(")
@@ -103,36 +104,71 @@
 (assert (= (get_indent [(dict :col 2 :bracket "(" :first_arg "filter")]) 10))
 (assert (= (get_indent [(dict :col 2 :bracket "(" :first_arg "defn") (dict :col 5 :bracket "(" :first_arg "print")]) 12))
 
-(defn print_token_tree [token_tree]
-      (setv code "")
-
-      (setv code (append_puctuation code (get token_tree :open_token :val)))
-      
-      (for [token (.get token_tree :childs)]
-           (let+ [{type "type" line "line" val "val"} token]
+(defn has_newline_before_identifier [node]
+      (let+ [{childs "childs"} node])
+      (for [child childs]
+           (as-> child ?
+                 (get ? "type")
                  (cond
-                       (= type TOKEN_SHEBANG) (setv code (append_shebang code val))
-                       (= type TOKEN_COMMENT) (setv code (append_comment code val))
-                       (= type TOKEN_PUNCTUATION)
-                       (do
-                           (setv+ {code "code" col "col"} (append_puctuation code val))
-                           (cond (open_punctuation? val)
-                                 (do (when (and (last bracket_stack) (not (get (last bracket_stack) "first_arg")))
-                                           (setv (get (last bracket_stack) "first_arg") val))
-                                     (bracket_stack.append (dict :bracket val :first_arg "" :line line :col col)))
-                                 (close_punctuation? val)
-                                 (when bracket_stack (.pop bracket_stack))))
-                       (= type TOKEN_STRING) (setv code (append_string code val))
-                       (= type TOKEN_IDENTIFIER)
-                       (do (setv code (append_identifier code val))
-                           (when (and (last bracket_stack)
-                                      (not (get (last bracket_stack) "first_arg")))
-                                 (setv (get (last bracket_stack) "first_arg") val)))
-                       
-                       (= type TOKEN_BRACKET_STRING) (setv code (append_string code val))
-                       (= type TOKEN_NEWLINE) (setv code (append_newline code (get_indent bracket_stack))))))
+                       (= ? TOKEN_NEWLINE)
+                       (return True)
+                       (= ? TOKEN_IDENTIFIER)
+                       (return False)))))
 
-      (setv code (append_puctuation code (get token_tree :close_token :val)))
+(defn calc_indent [node]
+      (cond
+            (= (as-> node ?
+                     (get ? "childs")
+                     (first ?)
+                     (.get ? "type")) TOKEN_IDENTIFIER)
+            (+ indent (if (as-> node ?
+                                (get ? "childs")
+                                (first ?)
+                                (get ? "type")
+                                (= ? TOKEN_IDENTIFIER))
+                          (as-> node ?
+                                (get ? "childs")
+                                (first ?)
+                                (get ? "val")
+                                (len ?))
+                          0)
+               
+               2)
+            True 0))
+
+(defn print_token_tree [node indent]
+      (setv code ""
+            open_token (.get node "open_token")
+            close_token (.get node "close_token")
+            my_indent (calc_indent node))
+      
+      (when (and open_token
+                 (= (.get open_token "type") TOKEN_PUNCTUATION))
+            (setv+ {code "code"} (append_puctuation code (get open_token "val"))))
+      
+      (for [token (.get node "childs")]
+           (if (.get token "childs")
+               (+= code (print_token_tree token
+                                          my_indent))
+               (let+ [{type "type" line "line" val "val"} token]
+                     (cond
+                           (= type TOKEN_SHEBANG) (setv code (append_shebang code val))
+                           (= type TOKEN_COMMENT) (setv code (append_comment code val))
+                           
+                           (= type TOKEN_PUNCTUATION)
+                           (setv+ {code "code"} (append_puctuation code val))
+                           
+                           (= type TOKEN_STRING) (setv code (append_string code val))
+                           
+                           (= type TOKEN_IDENTIFIER)
+                           (setv code (append_identifier code val))
+                           
+                           (= type TOKEN_BRACKET_STRING) (setv code (append_string code val))
+                           (= type TOKEN_NEWLINE) (setv code (append_newline code my_indent))))))
+      
+      (when (and close_token
+                 (= (.get close_token "type") TOKEN_PUNCTUATION))
+            (setv+ {code "code"} (append_puctuation code (get close_token "val"))))
       code)
 
 
@@ -146,13 +182,13 @@
          (for [path args.path]
               (setv code
                     (with [f (open path "r")] (.read f)))
-              (setv formatted (print_tokens (tokenize code)))
+              (setv formatted (print_token_tree (tokenize_tree code) 0))
               (if args.w
                   (when (!= code formatted)
                         (do (with [f (open path "w")]
                                   (.write f formatted))))
-                  (print formatted "end")))
+                  (print formatted)))
          (do
              (setv code (.read sys.stdin))
-             (print (print_tokens (tokenize code))
+             (print (print_token_tree (tokenize_tree code) 0)
                     :end ""))))

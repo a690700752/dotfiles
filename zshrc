@@ -98,7 +98,7 @@ plugins=(
   fnm
   adb
   yarn
-  vi-mode
+  # vi-mode
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -164,7 +164,7 @@ function ssh-home() {
 # adb
 #
 alias adb-input-menu='adb shell input keyevent 82'
-alias adb-scrcpy='scrcpy -w -S -m 1080 >/dev/null 2>&1 &'
+alias adb-scrcpy='scrcpy -S -m 1080 >/dev/null 2>&1 &'
 alias adb-noproxy="adb shell settings put global http_proxy :0"
 function adb-proxy() {
   if [ -z "$1" ]; then

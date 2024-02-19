@@ -172,6 +172,17 @@ vim.keymap.set("x", "<space>", function()
 	end
 end)
 
-vim.keymap.set("n", "g;", function()
+local map = vim.keymap.set
+
+map("n", "g;", function()
 	vscode.action("workbench.action.navigateToLastEditLocation")
 end)
+
+map("n", "vir", "vi(", { desc = "Select in round parenthesis" })
+map("n", "var", "va(", { desc = "Select around round parenthesis" })
+
+map("n", "vic", "vi{", { desc = "Select in curly parenthesis" })
+map("n", "vac", "va{", { desc = "Select around curly parenthesis" })
+
+map("n", "vig", 'vi"', { desc = "Select in string" })
+map("n", "vag", 'va"', { desc = "Select around string" })

@@ -1,12 +1,9 @@
 (import re)
+(import common *)
 (require hyrule [as->
                   let+
                   setv+])
 (import hyrule [inc dec pprint])
-
-(defn empty? [x] (if x False True))
-(defn first [x] (if x (get x 0) None))
-(defn last [x] (if x (get x -1) None))
 
 (setv TOKEN_IDENTIFIER "Identifier"
       TOKEN_PUNCTUATION "Punctuation"
@@ -37,7 +34,7 @@
             (when (= -1 line_idx)
                   (setv line_idx (len input)))
             (setv val (cut input line_idx))
-            (tokens.append {:line line :type TOKEN_SHEBANG :val val})
+            (tokens.append {"line" line "type" TOKEN_SHEBANG "val" val})
             (setv input (cut input line_idx None)))
       
       (while input
@@ -52,22 +49,22 @@
                              (setv pos_end (len input))
                              (setv pos_end (+ pos_start (len (+ "]" tag "]")))))
                          (setv content (cut input (.start res) pos_end))
-                         (tokens.append {:line line :type TOKEN_BRACKET_STRING :val content})
+                         (tokens.append {"line" line "type" TOKEN_BRACKET_STRING "val" content})
                          (setv input (cut input pos_end None))
                          (continue)))
              
              (for [c [[Comment TOKEN_COMMENT]
-                       [Newline TOKEN_NEWLINE (fn [] {:new_line (inc line)})]
+                       [Newline TOKEN_NEWLINE (fn [] {"new_line" (inc line)})]
                        [Whitespace TOKEN_WHITESPACE]
                        [Punctuation TOKEN_PUNCTUATION]
                        [String TOKEN_STRING]
                        [Identifier TOKEN_IDENTIFIER]]]
                   (setv res (.match (get c 0) input))
                   (when res
-                        (tokens.append {:line line :type (get c 1) :val (.group res)})
+                        (tokens.append {"line" line "type" (get c 1) "val" (.group res)})
                         (setv input (cut input (.end res) None))
                         (when (and (> (len c) 2) (get c 2))
-                              (let+ [{new_line :new_line} ((get c 2))]
+                              (let+ [{new_line "new_line"} ((get c 2))]
                                     (when (!= None new_line))
                                     (setv line new_line)))
                         
@@ -86,30 +83,38 @@
 
 (defn tokenize_tree_helper [cur_token wait_token tokens i]
       (setv childs [])
+      (setv close_token None)
       (while (< i (len tokens))
              (let+ [token (get tokens i)
-                     {:keys [type val]} token]
+                     {type "type" val "val"} token]
                    (cond
-                         (and (= type (get wait_token :type))
-                              (= val (get wait_token :val)))
-                         (break)
+                         (and (= type (get wait_token "type"))
+                              (= val (get wait_token "val")))
+                         (do
+                             (setv close_token token)
+                             (+= i 1)
+                             (break))
+                         
                          (and (= type TOKEN_PUNCTUATION) (in val ["(" "[" "{"]))
-                         (let [node (tokenize_tree_helper token {:type TOKEN_PUNCTUATION :val (get_end_pair val)} tokens (inc i))]
+                         (let [node (tokenize_tree_helper token {"type" TOKEN_PUNCTUATION "val" (get_end_pair val)} tokens (inc i))]
                               (childs.append node)
-                              (setv i (inc (get node :i))))
+                              (setv i (get node "i")))
+                         
                          True (do (childs.append token) (+= i 1)))))
-      {:open_token cur_token
-        :close_token (if (< i (len tokens)) (get tokens i) None)
-        :childs childs :i (inc i)})
+      {"open_token" cur_token
+        "close_token" close_token
+        "childs" childs "i" i})
 
-(defn tokenize_tree [tokens]
-      (setv end_token {:line 0 :type TOKEN_END :val None})
+(defn tokenize_tree_from_tokens [tokens]
+      (setv end_token {"line" 0 "type" TOKEN_END "val" None})
       (tokens.append end_token)
-      (tokenize_tree_helper {:line 0 :type TOKEN_START :val None}
+      (tokenize_tree_helper {"line" 0 "type" TOKEN_START "val" None}
                             end_token
                             tokens 0))
 
-(tokenize_tree (tokenize_seq #[[
-(a b c)
-(d e f)
-]]))
+(defn tokenize_tree [input]
+      (tokenize_tree_from_tokens (tokenize_seq input)))
+
+(tokenize_tree #[[
+(import re haha (get ddd "name"))
+]])
