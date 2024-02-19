@@ -98,6 +98,7 @@ return {
     "folke/flash.nvim",
     keys = {
       { "S", mode = { "x" }, false },
+      -- { "s", false },
     },
     opts = {
       modes = {
@@ -107,4 +108,19 @@ return {
       },
     },
   },
+  -- {
+  --   "smoka7/hop.nvim",
+  --   event = "VeryLazy",
+  --   version = "*",
+  --   keys = {
+  --     {
+  --       "s",
+  --       function()
+  --         local hop = require("hop")
+  --         hop.hint_words1({})
+  --       end,
+  --     },
+  --   },
+  --   opts = {},
+  -- },
 }
