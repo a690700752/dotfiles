@@ -108,19 +108,15 @@ return {
       },
     },
   },
-  -- {
-  --   "smoka7/hop.nvim",
-  --   event = "VeryLazy",
-  --   version = "*",
-  --   keys = {
-  --     {
-  --       "s",
-  --       function()
-  --         local hop = require("hop")
-  --         hop.hint_words1({})
-  --       end,
-  --     },
-  --   },
-  --   opts = {},
-  -- },
+  {
+    "hedyhli/outline.nvim",
+    lazy = true,
+    cmd = { "Outline", "OutlineOpen" },
+    keys = { -- Example mapping to toggle outline
+      { "<leader>uo", "<cmd>Outline<CR>", desc = "Toggle outline" },
+    },
+    opts = {
+      -- Your setup opts here
+    },
+  },
 }

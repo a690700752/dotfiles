@@ -47,4 +47,30 @@ return {
       { "<leader>;", "gc", mode = "x", remap = true, desc = "Comment Lines" },
     },
   },
+  {
+    "Olical/conjure",
+    ft = { "clojure", "fennel", "python" },
+    config = function(_, opts)
+      require("conjure.main").main()
+      require("conjure.mapping")["on-filetype"]()
+    end,
+    dependencies = {
+      {
+        "PaterJason/cmp-conjure",
+        config = function()
+          local cmp = require("cmp")
+          local config = cmp.get_config()
+          table.insert(config.sources, {
+            name = "buffer",
+            option = {
+              sources = {
+                { name = "conjure" },
+              },
+            },
+          })
+          cmp.setup(config)
+        end,
+      },
+    },
+  },
 }
