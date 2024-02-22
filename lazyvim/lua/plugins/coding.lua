@@ -49,7 +49,7 @@ return {
   },
   {
     "Olical/conjure",
-    ft = { "clojure", "fennel", "python" },
+    ft = { "clojure", "fennel", "python", "hy" },
     config = function(_, opts)
       require("conjure.main").main()
       require("conjure.mapping")["on-filetype"]()
@@ -72,5 +72,9 @@ return {
         end,
       },
     },
+  },
+  {
+    "gpanders/nvim-parinfer",
+    ft = { "hy" },
   },
 }

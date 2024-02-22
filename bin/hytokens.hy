@@ -1,8 +1,6 @@
 (import re)
 (import common *)
-(require hyrule [as->
-                  let+
-                  setv+])
+(require hyrule [as-> let+ setv+])
 (import hyrule [inc dec pprint])
 
 (setv TOKEN_IDENTIFIER "Identifier"
@@ -54,11 +52,11 @@
                          (continue)))
              
              (for [c [[Comment TOKEN_COMMENT]
-                       [Newline TOKEN_NEWLINE (fn [] {"new_line" (inc line)})]
-                       [Whitespace TOKEN_WHITESPACE]
-                       [Punctuation TOKEN_PUNCTUATION]
-                       [String TOKEN_STRING]
-                       [Identifier TOKEN_IDENTIFIER]]]
+                      [Newline TOKEN_NEWLINE (fn [] {"new_line" (inc line)})]
+                      [Whitespace TOKEN_WHITESPACE]
+                      [Punctuation TOKEN_PUNCTUATION]
+                      [String TOKEN_STRING]
+                      [Identifier TOKEN_IDENTIFIER]]]
                   (setv res (.match (get c 0) input))
                   (when res
                         (tokens.append {"line" line "type" (get c 1) "val" (.group res)})
@@ -116,5 +114,5 @@
       (tokenize_tree_from_tokens (tokenize_seq input)))
 
 (tokenize_tree #[[
-(import re haha (get ddd "name"))
-]])
+                  (import re haha (get ddd "name"))]])
+
