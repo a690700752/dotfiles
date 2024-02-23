@@ -21,6 +21,9 @@ map("n", "<leader>'", "<leader>fT", { desc = "Terminal (cwd)", remap = true })
 map("n", "<leader>xr", function()
   vim.lsp.buf.rename()
 end, { desc = "Rename" })
+
+map("n", "<leader>xi", "<leader>co", { desc = "Orgnize Imports", remap = true })
+
 map("n", "<leader>x.", function()
   vim.lsp.buf.code_action()
 end, { desc = "Code Action" })

@@ -124,4 +124,8 @@ return {
       require("im_select").setup({})
     end,
   },
+  {
+    "cshuaimin/ssr.nvim",
+    event = "VeryLazy",
+  },
 }

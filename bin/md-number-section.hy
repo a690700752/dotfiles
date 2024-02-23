@@ -5,12 +5,15 @@
 (import hyrule *)
 (require hyrule *)
 
+(defn assert-eq [a b]
+  (assert (= a b)))
+
 (defn remove-prefix-pound-sign [s]
   (.strip (re.sub r"^\#+" "" s)))
 
-(assert 
-  (= (remove-prefix-pound-sign "### title 3") 
-     "title 3")) 
+(assert-eq
+  (remove-prefix-pound-sign "### title 3")
+  "title 3") 
 
 (defn str-count-start-char [s c]
  (setv index 0)
@@ -20,13 +23,21 @@
         (+= index 1))
  index)
 
-(assert
- (=
-  (str-count-start-char "### title 3" "#")
-  3))
+(assert-eq
+ (str-count-start-char "### title 3" "#")
+ 3)
 
 (defn get-header-level [header]
  (str-count-start-char header "#"))
+
+(defn get-header-content [header]
+ (.strip (re.sub
+           r"^#+\s+(\d+(\.\d)*)*" "" header)))
+
+(assert-eq (get-header-content "### 1.2.3 title 3")
+           "title 3")
+(assert-eq (get-header-content "### title 3")
+           "title 3")
 
 (defn get-header-ref [header]
   (as-> (remove-prefix-pound-sign header) it
@@ -36,20 +47,18 @@
         (re.sub r"-+" "-" it)))
 
 
-(assert 
-  (=
-     (get-header-ref "### 1.2.3 title 3")
-     "123-title-3"))
+(assert-eq
+  (get-header-ref "### 1.2.3 title 3")
+  "123-title-3")
 
 (defn arr-pad [arr num val]
   (if (< (len arr) num)
     (+ arr (* [val] (- num (len arr))))
     arr))
 
-(assert 
-  (=
-    (arr-pad ["1" "2" "3"] 5 "0")
-    ["1" "2" "3" "0" "0"]))
+(assert-eq
+  (arr-pad ["1" "2" "3"] 5 "0")
+  ["1" "2" "3" "0" "0"])
 
 (defn assocr [coll k1 v1]
   (assoc coll k1 v1)
@@ -60,10 +69,9 @@
         (inc it)
         (str it)))
 
-(assert 
-  (=
+(assert-eq
     (inc-str "9")
-    "10"))
+    "10")
 
 (defn semver-add-by-index [old inc level]
   (as-> (.split old ".") it
@@ -72,27 +80,23 @@
         (assocr it -1 (inc-str (get it -1)))
         (.join "." it)))
 
-(assert 
-  (=
+(assert-eq
     (semver-add-by-index "1.2" 1 1)
-    "2"))
-(assert 
-  (=
+    "2")
+(assert-eq
     (semver-add-by-index "1.2" 1 2)
-    "1.3"))
-(assert 
-  (=
+    "1.3")
+(assert-eq
     (semver-add-by-index "1.2" 1 3)
-    "1.2.1"))
-(assert 
-  (=
+    "1.2.1")
+(assert-eq
     (semver-add-by-index "1.2" 1 4)
-    "1.2.0.1"))
+    "1.2.0.1")
 
 (defn renumber-md [doc]
   (setv last-ver "0"
         changed-header [])
-  (setv content
+  (setv doc
     (re.sub 
       r"^```[\s\S]*?^```|^#+.*"
       (fn [match]
@@ -107,17 +111,16 @@
                  (setv add-line (.join " "
                                   [(* "#" (get-header-level block))
                                    last-ver 
-                                   (remove-prefix-pound-sign block)]))
+                                   (get-header-content block)]))
                  (changed-header.append [block add-line])
                  add-line)
                block)))
       doc
       :flags re.MULTILINE))
-  [content changed-header])
+  [doc changed-header])
  
  
-(assert 
- (= 
+(assert-eq
   (renumber-md "
 # title 1
 daf
@@ -126,7 +129,7 @@ daf
 heih
 ## subtitle2")
   ["\n# 1 title 1\ndaf\n## 1.1 subtitle 1\n# 2 title2\nheih\n## 2.1 subtitle2" 
-   [["# title 1" "# 1 title 1"] ["## subtitle 1" "## 1.1 subtitle 1"] ["# title2" "# 2 title2"] ["## subtitle2" "## 2.1 subtitle2"]]]))
+   [["# title 1" "# 1 title 1"] ["## subtitle 1" "## 1.1 subtitle 1"] ["# title2" "# 2 title2"] ["## subtitle2" "## 2.1 subtitle2"]]])
 
 (defn replace-header-ref [doc changed-header]
  (for [h changed-header]
@@ -143,10 +146,9 @@ heih
  doc)
  
 
-(assert
-  (=
+(assert-eq
     (replace-header-ref "[title](#1-title)" [["# 1 title" "# 3 title"]])
-    "[title](#3-title)"))
+    "[title](#3-title)")
 
 
 (defn read-file [f] 
@@ -163,4 +165,3 @@ heih
        (replace-header-ref #* it)
        (write-file file it)))
  
-
