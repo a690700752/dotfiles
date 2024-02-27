@@ -77,4 +77,12 @@ return {
     "gpanders/nvim-parinfer",
     ft = { "hy" },
   },
+  {
+    "ThePrimeagen/refactoring.nvim",
+    lazy = true,
+    cmd = { "Refactor" },
+    config = function()
+      require("refactoring").setup()
+    end,
+  },
 }
