@@ -1,5 +1,16 @@
-local vscode = require("vscode-neovim")
-vim.notify = vscode.notify
+local map = vim.keymap.set
+
+local function withVscode(func)
+	if vim.g.vscode then
+		local vscode = require("vscode-neovim")
+		return func(vscode)
+	end
+end
+
+withVscode(function (vscode)
+	vim.notify = vscode.notify
+end)
+
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
 	vim.fn.system({
@@ -141,41 +152,42 @@ local function getVisualSelection()
 	return start, finish
 end
 
-vim.keymap.set("n", "<space>", function()
-	vscode.action("vspacecode.space")
-end)
-vim.keymap.set("n", "<C-N>", function()
-	vscode.action("workbench.action.toggleSidebarVisibility")
-end)
-vim.keymap.set("x", "<space>", function()
-	local start, finish = getVisualSelection()
-	if vim.fn.mode() == "V" then
-		vscode.action("vspacecode.space", {
-			range = {
-				start[2],
-				finish[2],
-			},
-		})
-	else
-		vscode.action("vspacecode.space", {
-			range = {
-				start = {
-					line = start[2],
-					character = start[3],
+withVscode(function (vscode)
+	map("n", "<space>", function()
+		vscode.action("vspacecode.space")
+	end)
+	map("n", "<C-N>", function()
+		vscode.action("workbench.action.toggleSidebarVisibility")
+	end)
+	map("x", "<space>", function()
+		local start, finish = getVisualSelection()
+		if vim.fn.mode() == "V" then
+			vscode.action("vspacecode.space", {
+				range = {
+					start[2],
+					finish[2],
 				},
-				["end"] = {
-					line = finish[2],
-					character = finish[3],
+			})
+		else
+			vscode.action("vspacecode.space", {
+				range = {
+					start = {
+						line = start[2],
+						character = start[3],
+					},
+					["end"] = {
+						line = finish[2],
+						character = finish[3],
+					},
 				},
-			},
-		})
-	end
-end)
+			})
+		end
+	end)
 
-local map = vim.keymap.set
 
-map("n", "g;", function()
-	vscode.action("workbench.action.navigateToLastEditLocation")
+	map("n", "g;", function()
+		vscode.action("workbench.action.navigateToLastEditLocation")
+	end)
 end)
 
 map("n", "vir", "vi(", { desc = "Select in round parenthesis" })
@@ -186,3 +198,5 @@ map("n", "vac", "va{", { desc = "Select around curly parenthesis" })
 
 map("n", "vig", 'vi"', { desc = "Select in string" })
 map("n", "vag", 'va"', { desc = "Select around string" })
+
+map({ "i", "n" }, "<esc>", "<cmd>noh<cr><esc>", { desc = "Escape and clear hlsearch" })

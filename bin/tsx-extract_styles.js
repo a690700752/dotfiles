@@ -44,16 +44,15 @@ function getStyles(content) {
     match = exp.exec(content);
   }
 
-  styles = styles
-    .filter((s) => s.indexOf("// no extract") === -1)
-    .filter((s) => {
-      try {
-        JSON5.parse(s);
-        return true;
-      } catch {
-        return false;
-      }
-    });
+  styles = styles.filter((s) => s.indexOf("// no extract") === -1);
+  // .filter((s) => {
+  //   try {
+  //     JSON5.parse(s);
+  //     return true;
+  //   } catch {
+  //     return false;
+  //   }
+  // });
 
   return styles;
 }

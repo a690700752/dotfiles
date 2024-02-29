@@ -14,6 +14,18 @@ local map = vim.keymap.set
 map("i", "jk", "<Esc>")
 map("n", "<leader>w/", "<C-W>v", { desc = "Split window right", remap = true })
 map("n", "<leader>ee", "<cmd>lua vim.diagnostic.open_float()<cr>", { desc = "Show Error" })
+map("n", "<leader>en", function()
+  local nextError = vim.diagnostic.get_next({
+    severity = vim.diagnostic.severity.ERROR,
+  })
+  if nextError then
+    vim.diagnostic.goto_next({
+      severity = vim.diagnostic.severity.ERROR,
+    })
+  else
+    vim.diagnostic.goto_next()
+  end
+end, { desc = "Next Error" })
 map("n", "<leader>fs", "<cmd>w<cr>", { desc = "Save" })
 map("n", "<leader>fS", "<cmd>wa<cr>", { desc = "Save All" })
 map("n", "<leader><tab>", "<cmd>e #<cr>", { desc = "Last Buffer" })
