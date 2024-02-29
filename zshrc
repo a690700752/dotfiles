@@ -134,6 +134,11 @@ alias gcz='npx -g git-cz'
 
 [[ ! -f ~/.p.env ]] || source ~/.p.env
 
+killnx()
+{
+  ps -ef | grep 'nx/src/daemon' | grep -v 'grep' | awk '{print $2}' | xargs kill
+}
+
 function git-cfg-user() {
   if [ `git remote -v | grep yzw.cn | wc -l` -eq 0 ]; then
       git config user.name moonveil

@@ -163,5 +163,6 @@ heih
  (as-> (read-file file) it
        (renumber-md it)
        (replace-header-ref #* it)
-       (write-file file it)))
+       (write-file file it))
+ 0)
  
