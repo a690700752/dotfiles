@@ -24,23 +24,32 @@ return {
     config = function()
       vim.cmd([[
         COQnow -s
-        let g:coq_settings = { "keymap.recommended": v:false }
-
         ino <silent><expr> <Esc>   pumvisible() ? "\<C-e><Esc>" : "\<Esc>"
         ino <silent><expr> <C-c>   pumvisible() ? "\<C-e><C-c>" : "\<C-c>"
         ino <silent><expr> <BS>    pumvisible() ? "\<C-e><BS>"  : "\<BS>"
-        ino <silent><expr> <CR>    pumvisible() ? (complete_info().selected == -1 ? "\<C-e><CR>" : "\<C-y>") : "\<CR>"
-        ino <silent><expr> <C-j>   pumvisible() ? "\<C-n>" : "\<Tab>"
+        " ino <silent><expr> <CR>    pumvisible() ? (complete_info().selected == -1 ? "\<C-e><CR>" : "\<C-y>") : "\<CR>"
+        ino <silent><expr> <CR>    pumvisible() ? (complete_info().selected == -1 ? "\<C-n><C-y>" : "\<C-y>") : "\<CR>"
+        ino <silent><expr> <C-j>   pumvisible() ? (complete_info().selected == -1 ? "\<C-n><C-n>" : "\<C-n>") : "\<Tab>"
         ino <silent><expr> <C-k>   pumvisible() ? "\<C-p>" : "\<BS>"
       ]])
+
+      require("coq_3p")({
+        { src = "codeium", short_name = "COD" },
+      })
       vim.g.coq_settings = {
-        keymap = { bigger_preview = "<F13>" },
+        keymap = { bigger_preview = "<F13>", recommended = false, jump_to_mark = "<F13>" },
       }
+      vim.keymap.set("i", "<Tab>", function()
+        return vim.fn["codeium#Accept"]()
+      end, { expr = true, silent = true })
     end,
     dependencies = {
       {
         "ms-jpq/coq.artifacts",
         branch = "artifacts",
+      },
+      {
+        "Exafunction/codeium.vim",
       },
       {
         "ms-jpq/coq.thirdparty",
@@ -65,19 +74,19 @@ return {
     dependencies = {
       {
         "PaterJason/cmp-conjure",
-        config = function()
-          local cmp = require("cmp")
-          local config = cmp.get_config()
-          table.insert(config.sources, {
-            name = "buffer",
-            option = {
-              sources = {
-                { name = "conjure" },
-              },
-            },
-          })
-          cmp.setup(config)
-        end,
+        -- config = function()
+        --   local cmp = require("cmp")
+        --   local config = cmp.get_config()
+        --   table.insert(config.sources, {
+        --     name = "buffer",
+        --     option = {
+        --       sources = {
+        --         { name = "conjure" },
+        --       },
+        --     },
+        --   })
+        --   cmp.setup(config)
+        -- end,
       },
     },
   },
