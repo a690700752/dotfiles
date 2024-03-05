@@ -165,6 +165,9 @@ alias rm='safe-rm'
 function ssh-home() {
   env -i TERM=xterm-256color ssh home
 }
+ssh-mi () {
+  env -i TERM=xterm-256color ssh mi
+}
 # 
 # adb
 #

@@ -1,4 +1,5 @@
 local map = vim.keymap.set
+vim.cmd('syntax off')
 
 local function withVscode(func)
 	if vim.g.vscode then

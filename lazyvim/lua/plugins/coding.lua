@@ -7,6 +7,7 @@ end
 return {
   {
     "hrsh7th/nvim-cmp",
+    enabled = false,
     ---@param opts cmp.ConfigSchema
     opts = function(_, opts)
       local cmp = require("cmp")
@@ -14,31 +15,38 @@ return {
 
       opts.mapping["<C-k>"] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert })
       opts.mapping["<C-j>"] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert })
-      -- opts.mapping["<Tab>"] = cmp.mapping(function(fallback)
-      --   -- local copilot_keys = vim.fn["codeium#Accept"]()
-      --   -- local copilot_keys = ''
-      --   -- if copilot_keys ~= "" and type(copilot_keys) == "string" then
-      --   -- vim.api.nvim_feedkeys(copilot_keys, "i", true)
-      --
-      --   local codeium_status = vim.fn["codeium#GetStatusString"]()
-      --   if string.find(codeium_status, "/") then
-      --     vim.api.nvim_feedkeys(vim.fn["codeium#Accept"](), "i", true)
-      --   elseif cmp.visible() then
-      --     cmp.select_next_item()
-      --   -- You could replace the expand_or_jumpable() calls with expand_or_locally_jumpable()
-      --   -- that way you will only jump inside the snippet region
-      --   elseif luasnip.expand_or_jumpable() then
-      --     luasnip.expand_or_jump()
-      --   elseif has_words_before() then
-      --     cmp.complete()
-      --   else
-      --     fallback()
-      --   end
-      -- end, {
-      --   "i",
-      --   "s",
-      -- })
     end,
+  },
+  {
+    "ms-jpq/coq_nvim",
+    branch = "coq",
+    event = "InsertEnter",
+    config = function()
+      vim.cmd([[
+        COQnow -s
+        let g:coq_settings = { "keymap.recommended": v:false }
+
+        ino <silent><expr> <Esc>   pumvisible() ? "\<C-e><Esc>" : "\<Esc>"
+        ino <silent><expr> <C-c>   pumvisible() ? "\<C-e><C-c>" : "\<C-c>"
+        ino <silent><expr> <BS>    pumvisible() ? "\<C-e><BS>"  : "\<BS>"
+        ino <silent><expr> <CR>    pumvisible() ? (complete_info().selected == -1 ? "\<C-e><CR>" : "\<C-y>") : "\<CR>"
+        ino <silent><expr> <C-j>   pumvisible() ? "\<C-n>" : "\<Tab>"
+        ino <silent><expr> <C-k>   pumvisible() ? "\<C-p>" : "\<BS>"
+      ]])
+      vim.g.coq_settings = {
+        keymap = { bigger_preview = "<F13>" },
+      }
+    end,
+    dependencies = {
+      {
+        "ms-jpq/coq.artifacts",
+        branch = "artifacts",
+      },
+      {
+        "ms-jpq/coq.thirdparty",
+        branch = "3p",
+      },
+    },
   },
   {
     "echasnovski/mini.comment",
@@ -87,6 +95,10 @@ return {
   },
   {
     "neovim/nvim-lspconfig",
+    init = function()
+      local keys = require("lazyvim.plugins.lsp.keymaps").get()
+      keys[#keys + 1] = { "<C-k>", mode = { "i" }, false }
+    end,
     ---@class PluginLspOpts
     opts = {
       ---@type lspconfig.options
