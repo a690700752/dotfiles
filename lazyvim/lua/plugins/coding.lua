@@ -72,22 +72,22 @@ return {
       require("conjure.mapping")["on-filetype"]()
     end,
     dependencies = {
-      {
-        "PaterJason/cmp-conjure",
-        -- config = function()
-        --   local cmp = require("cmp")
-        --   local config = cmp.get_config()
-        --   table.insert(config.sources, {
-        --     name = "buffer",
-        --     option = {
-        --       sources = {
-        --         { name = "conjure" },
-        --       },
-        --     },
-        --   })
-        --   cmp.setup(config)
-        -- end,
-      },
+      -- {
+      -- "PaterJason/cmp-conjure",
+      -- config = function()
+      --   local cmp = require("cmp")
+      --   local config = cmp.get_config()
+      --   table.insert(config.sources, {
+      --     name = "buffer",
+      --     option = {
+      --       sources = {
+      --         { name = "conjure" },
+      --       },
+      --     },
+      --   })
+      --   cmp.setup(config)
+      -- end,
+      -- },
     },
   },
   {
