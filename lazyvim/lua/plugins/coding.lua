@@ -7,7 +7,6 @@ end
 return {
   {
     "hrsh7th/nvim-cmp",
-    enabled = false,
     ---@param opts cmp.ConfigSchema
     opts = function(_, opts)
       local cmp = require("cmp")
@@ -19,6 +18,7 @@ return {
   },
   {
     "ms-jpq/coq_nvim",
+    enabled = false,
     branch = "coq",
     event = "InsertEnter",
     config = function()
@@ -29,8 +29,8 @@ return {
         ino <silent><expr> <BS>    pumvisible() ? "\<C-e><BS>"  : "\<BS>"
         " ino <silent><expr> <CR>    pumvisible() ? (complete_info().selected == -1 ? "\<C-e><CR>" : "\<C-y>") : "\<CR>"
         ino <silent><expr> <CR>    pumvisible() ? (complete_info().selected == -1 ? "\<C-n><C-y>" : "\<C-y>") : "\<CR>"
-        ino <silent><expr> <C-j>   pumvisible() ? (complete_info().selected == -1 ? "\<C-n><C-n>" : "\<C-n>") : "\<Tab>"
-        ino <silent><expr> <C-k>   pumvisible() ? "\<C-p>" : "\<BS>"
+        ino <silent><expr> <C-j>   pumvisible() ? (complete_info().selected == -1 ? "\<C-n><C-n>" : "\<C-n>") : "\<C-j>"
+        ino <silent><expr> <C-k>   pumvisible() ? "\<C-p>" : "\<C-k>"
       ]])
 
       require("coq_3p")({
@@ -72,22 +72,22 @@ return {
       require("conjure.mapping")["on-filetype"]()
     end,
     dependencies = {
-      -- {
-      -- "PaterJason/cmp-conjure",
-      -- config = function()
-      --   local cmp = require("cmp")
-      --   local config = cmp.get_config()
-      --   table.insert(config.sources, {
-      --     name = "buffer",
-      --     option = {
-      --       sources = {
-      --         { name = "conjure" },
-      --       },
-      --     },
-      --   })
-      --   cmp.setup(config)
-      -- end,
-      -- },
+      {
+        "PaterJason/cmp-conjure",
+        config = function()
+          local cmp = require("cmp")
+          local config = cmp.get_config()
+          table.insert(config.sources, {
+            name = "buffer",
+            option = {
+              sources = {
+                { name = "conjure" },
+              },
+            },
+          })
+          cmp.setup(config)
+        end,
+      },
     },
   },
   {

@@ -1,6 +1,25 @@
 return {
   {
     "nvim-telescope/telescope.nvim",
+    opts = {
+      defaults = {
+        path_display = { "truncate" },
+        mappings = {
+          i = {
+            ["<C-j>"] = {
+              require("telescope.actions").move_selection_next,
+              type = "action",
+              opts = { nowait = true, silent = true },
+            },
+            ["<C-k>"] = {
+              require("telescope.actions").move_selection_previous,
+              type = "action",
+              opts = { nowait = true, silent = true },
+            },
+          },
+        },
+      },
+    },
     keys = {
       { "<leader>*", mode = { "n", "v" }, "<cmd>Telescope grep_string<cr>", desc = "Live Grep" },
       { "<leader>/", "<cmd>Telescope live_grep<cr>", desc = "Grep (cwd)" },
