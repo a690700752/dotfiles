@@ -57,7 +57,7 @@ end, {})
 
 vim.api.nvim_create_user_command("TsxExtractStyles", function()
   vim.cmd("w")
-  vim.cmd("!tsx-extract_styles %")
+  vim.cmd("!tsx-extract-styles %")
 end, {})
 
 vim.api.nvim_create_user_command("FileInFolder", function(tbl)

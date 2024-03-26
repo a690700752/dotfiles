@@ -54,7 +54,39 @@ return {
     keys = {
       { "<leader>e", false },
       { "<leader>E", false },
-      { "<C-N>", "<leader>fE", desc = "Explorer NeoTree (cwd)", remap = true },
+      {
+        "<leader>ft",
+        function()
+          require("neo-tree.command").execute({ toggle = true, dir = vim.uv.cwd() })
+        end,
+        desc = "Explorer NeoTree (cwd)",
+      },
+    },
+    opts = {
+      filesystem = {
+        window = {
+          mappings = {
+            ["hs"] = function(state)
+              local node = state.tree:get_node()
+              local type = node.type
+              local Path = require("plenary.path")
+              local cwd = vim.fn.getcwd()
+              local relpath = Path:new(node.path):make_relative(cwd)
+              local spectre = require("spectre")
+
+              if type == "file" then
+                spectre.open({
+                  path = relpath,
+                })
+              elseif type == "directory" then
+                spectre.open({
+                  path = relpath .. "/**/*",
+                })
+              end
+            end,
+          },
+        },
+      },
     },
   },
   {

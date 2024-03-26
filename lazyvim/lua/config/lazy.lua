@@ -6,9 +6,25 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(vim.env.LAZY or lazypath)
 
+local function dump(o)
+  if type(o) == "table" then
+    local s = "{ "
+    for k, v in pairs(o) do
+      if type(k) ~= "number" then
+        k = '"' .. k .. '"'
+      end
+      s = s .. "[" .. k .. "] = " .. dump(v) .. ","
+    end
+    return s .. "} "
+  else
+    return tostring(o)
+  end
+end
+
 function _G.pprint(...)
-  local objects = vim.tbl_map(vim.inspect, { ... })
-  print(unpack(objects))
+  -- local objects = vim.tbl_map(vim.inspect, { ... })
+  -- print(unpack(objects))
+  print(dump(...))
 end
 
 require("lazy").setup({

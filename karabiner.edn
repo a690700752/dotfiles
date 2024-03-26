@@ -1,0 +1,73 @@
+{:profiles
+ {:goku {:default true
+         :alone   80 ; hold for .. ms to register single tap
+         :held    50 ; TODO: not sure what it's for
+         :delay   0 ; time after which the key press is delayed
+         :sim     30}} ; keys need to be pressed within this threshold to be considered simultaneous
+
+ :templates
+ {:opena "open -a \"%s\""}
+
+ :devices
+ {:kb-mac [{:vendor_id 1452 :product_id 34304}]
+  :kb-magic  [{:vendor_id 1241 :product_id 36}]}
+   
+ :simlayers 
+ {:o-mode {:key :o}}
+
+ :main
+ [
+  {:des "swap win and alt"
+   :rules
+    [
+     [:left_command :left_option :kb-magic]
+     [:left_option :left_command :kb-magic]
+     [:right_control :right_option :kb-magic]
+     [:right_option :right_command :kb-magic]]}
+ 
+  {:des "swap ctrl and caps"
+   :rules
+    [
+     [:##left_control :caps_lock]
+     [:##caps_lock :left_control]]}
+
+  {:des "tab -> tab(alone) and tab -> hyper"
+   :rules
+    [
+     [:##tab :!CTOleft_shift nil {:alone :tab}]]}
+
+  {:des "backslash -> backslash(alone) and backslash -> hyper"
+   :rules
+    [
+     [:##backslash :!CTOleft_shift nil {:alone :backslash}]]}
+
+  {:des "Map Command-Shift-Option-Control-Period to f19 (avoid System Diagnostics)"
+   :rules
+    [
+     [:!CTOSperiod :f19]]}
+
+  {:des "Map Command-Shift-Option-Control-Comma to f18 (avoid System Diagnostics)"
+   :rules
+    [
+     [:!CTOScomma :f18]]}
+
+  {:des "Map Command-Shift-Option-Control-w to f17 (avoid Wifi Diagnostics)"
+   :rules
+    [
+     [:!CTOSw :f17]]}
+
+  {:des "o(pen) mode"
+   :rules 
+    [:o-mode
+      [:c [:opena "Google Chrome.app"]]
+      [:d [:opena "dingTalk.app"]]
+      [:w [:opena "WeChat.app"]]
+      [:k [:opena "kitty"]]
+      [:v [:opena "Visual Studio Code"]]]}]}
+
+;; code won't read cheatsheet section
+ ;; ! stand for mandatory
+ ;; # stand for optional
+ ;; C T O S for left command control optional shift
+ ;; F for fn
+ ;; need to prefix C T O S F with ! or #

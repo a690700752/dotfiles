@@ -19,7 +19,11 @@ yabai -m rule --add app="^微信$" manage=off
 yabai -m rule --add app="^归档实用工具$" manage=off
 yabai -m rule --add app="^Airy$" manage=off
 yabai -m rule --add app="^QtScrcpy$" manage=off
+yabai -m rule --add app="^Thief$" manage=off
+yabai -m rule --add app="Alfred" manage=off
+yabai -m rule --add app="Raycast" manage=off
 
+  # external_bar all:32:0 \
 yabai -m config \
 	mouse_follows_focus off \
 	focus_follows_mouse off \

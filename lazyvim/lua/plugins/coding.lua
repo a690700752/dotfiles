@@ -92,7 +92,7 @@ return {
   },
   {
     "gpanders/nvim-parinfer",
-    ft = { "hy" },
+    ft = { "hy", "clojure" },
   },
   {
     "ThePrimeagen/refactoring.nvim",

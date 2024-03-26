@@ -139,7 +139,7 @@ killnx()
   ps -ef | grep 'nx/src/daemon' | grep -v 'grep' | awk '{print $2}' | xargs kill
 }
 
-function git-cfg-user() {
+git-cfg-user() {
   if [ `git remote -v | grep yzw.cn | wc -l` -eq 0 ]; then
       git config user.name moonveil
       git config user.email tz59pk@gmail.com
@@ -162,7 +162,7 @@ export no_proxy=::1,127.0.0.1
 # alias ssh="env -i TERM=xterm-256color ssh"
 alias ssh="kitty +kitten ssh"
 alias rm='safe-rm'
-function ssh-home() {
+ssh-home() {
   env -i TERM=xterm-256color ssh home
 }
 ssh-mi () {
@@ -174,7 +174,7 @@ ssh-mi () {
 alias adb-input-menu='adb shell input keyevent 82'
 alias adb-scrcpy='scrcpy -S -m 1080 >/dev/null 2>&1 &'
 alias adb-noproxy="adb shell settings put global http_proxy :0"
-function adb-proxy() {
+adb-proxy() {
   if [ -z "$1" ]; then
 	echo "Usage: adb-proxy <proxy-port>"
 	return 1
@@ -182,7 +182,7 @@ function adb-proxy() {
   ifconfig | grep -Eo '(172|192)[.0-9]+' | head -1 | xargs -I{} echo adb shell settings put global http_proxy {}:$1
   ifconfig | grep -Eo '(172|192)[.0-9]+' | head -1 | xargs -I{} adb shell settings put global http_proxy {}:$1
 }
-function adb-reverse-tcp() {
+adb-reverse-tcp() {
   adb reverse tcp:$1 tcp:$1
 }
 
