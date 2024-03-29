@@ -6,64 +6,199 @@
          :sim     30}} ; keys need to be pressed within this threshold to be considered simultaneous
 
  :templates
- {:opena "open -a \"%s\""}
+ {:open-a "open -a \"%s\""
+  :open-g "open -g \"%s\""}
 
  :devices
  {:kb-mac [{:vendor_id 1452 :product_id 34304}]
   :kb-magic  [{:vendor_id 1241 :product_id 36}]}
    
- :simlayers 
- {:o-mode {:key :o}}
+ :simlayers
+ {:o-mode {:key :o}
+
+  ; :f-mode {:key :f}    ; left symbols mode
+  ; :j-mode {:key :j}}    ; right symbols mode
+  :a-mode {:key :a}}    ; navigation hjkl + tab + enter + page down/up
+  ; :s-mode {:key :s}    ; punctuation   ? ! : ; ' \" ` ~
+  ; :d-mode {:key :d}    ; arithmetic    + - * / = % < > #
+  ; :f-mode {:key :f}    ; delimeters    ( ) [ ] { } and other symbols ~ $ &
+  ;
+  ; :v-mode {:key :v}    ; Number pad with + - BS ENTER as well
+  ; :c-mode {:key :c}}    ; Slashes and lines  ^ | \ _ @
 
  :main
- [
-  {:des "swap win and alt"
+ [{:des "swap win and alt"
    :rules
-    [
-     [:left_command :left_option :kb-magic]
-     [:left_option :left_command :kb-magic]
-     [:right_control :right_option :kb-magic]
-     [:right_option :right_command :kb-magic]]}
+   [[:left_command :left_option :kb-magic]
+    [:left_option :left_command :kb-magic]
+    [:right_control :right_option :kb-magic]
+    [:right_option :right_command :kb-magic]]}
  
   {:des "swap ctrl and caps"
    :rules
-    [
-     [:##left_control :caps_lock]
-     [:##caps_lock :left_control]]}
+   [[:##left_control :caps_lock]
+    [:##caps_lock :left_control]]}
 
-  {:des "tab -> tab(alone) and tab -> hyper"
-   :rules
-    [
-     [:##tab :!CTOleft_shift nil {:alone :tab}]]}
+  ; {:des "tab -> tab(alone) and tab -> hyper"
+  ;  :rules
+  ;   [
+  ;    [:##tab :!CTOleft_shift nil {:alone :tab}]]}
 
-  {:des "backslash -> backslash(alone) and backslash -> hyper"
-   :rules
-    [
-     [:##backslash :!CTOleft_shift nil {:alone :backslash}]]}
+  ; {:des "backslash -> backslash(alone) and backslash -> hyper"
+  ;  :rules
+  ;   [
+  ;    [:##backslash :!CTOleft_shift nil {:alone :backslash}]]}
 
   {:des "Map Command-Shift-Option-Control-Period to f19 (avoid System Diagnostics)"
-   :rules
-    [
-     [:!CTOSperiod :f19]]}
+   :rules [[:!CTOSperiod :f19]]}
 
   {:des "Map Command-Shift-Option-Control-Comma to f18 (avoid System Diagnostics)"
-   :rules
-    [
-     [:!CTOScomma :f18]]}
+   :rules [[:!CTOScomma :f18]]}
 
   {:des "Map Command-Shift-Option-Control-w to f17 (avoid Wifi Diagnostics)"
-   :rules
-    [
-     [:!CTOSw :f17]]}
+   :rules [[:!CTOSw :f17]]}
 
   {:des "o(pen) mode"
-   :rules 
-    [:o-mode
-      [:c [:opena "Google Chrome.app"]]
-      [:d [:opena "dingTalk.app"]]
-      [:w [:opena "WeChat.app"]]
-      [:k [:opena "kitty"]]
-      [:v [:opena "Visual Studio Code"]]]}]}
+   :rules
+   [:o-mode
+     [:c [:open-a "Google Chrome.app"]]
+     [:d [:open-a "dingTalk.app"]]
+     [:w [:open-a "WeChat.app"]]
+     [:k [:open-a "kitty"]]
+     [:v [:open-a "Visual Studio Code"]]
+     [:r [:open-a "warp"]]
+     [:q [:open-a "QtScrcpy"]]
+     [:a [:open-a "Activity Monitor"]]]}
+
+  ; {:des "f-mode symbols"
+  ;  :rules
+  ;  [:f-mode
+  ;   [:##y :!S7]
+  ;   [:##u [:!Ssemicolon :!Ssemicolon]]
+  ;   [:##i :open_bracket]
+  ;   [:##o :close_bracket]
+  ;   [:##p :!S5]
+  ;
+  ;   [:##h :!Sbackslash]
+  ;   [:##j :!Ssemicolon]
+  ;   [:##k :!S9]
+  ;   [:##l :!S0]
+  ;   [:##semicolon :!Sslash]
+  ;
+  ;   [:##n :!Sgrave_accent_and_tilde]
+  ;   [:##m :!S4]
+  ;   [:##comma :!Sopen_bracket]
+  ;   [:##period :!Sclose_bracket]
+  ;   [:##slash :!S2]]}
+  ;
+  ; {:des "j-mode symbols"
+  ;  :rules
+  ;  [:j-mode
+  ;   [:##q :quote]
+  ;   [:##w :!Scomma]
+  ;   [:##e :!Speriod]
+  ;   [:##r :!Squote]
+  ;   [:##t :period]
+  ;
+  ;   [:##a :!S1]
+  ;   [:##s :hyphen]
+  ;   [:##d :!Sequal_sign]
+  ;   [:##f :equal_sign]
+  ;   [:##g :!S3]
+  ;
+  ;   [:##z :!S6]
+  ;   [:##x :slash]
+  ;   [:##c :!S8]
+  ;   [:##v :backslash]
+  ;   [:##b [:period :period :slash]]]}]}
+  
+
+  {:des "a-mode for hjkl movement and nm enter and ui tab and ,. PageDn/Up"
+   :rules
+   [:a-mode
+    [:##h :left_arrow]
+    [:##j :down_arrow]
+    [:##k :up_arrow]
+    [:##l :right_arrow]
+    [:##n :return_or_enter]
+    [:##m :return_or_enter]
+    [:##u [:open-g "raycast://extensions/raycast/window-management/left-half"]]
+    [:##i [:open-g "raycast://extensions/raycast/window-management/right-half"]]
+    [:##y [:open-g "raycast://extensions/raycast/window-management/maximize"]]
+    [:comma :page_down]
+    [:period :page_up]]}]}
+  
+  ; {:des "f-mode for delimeters and ! ? $"
+  ;  :rules
+  ;  [:f-mode
+  ;   ;; u i j k m comma -> !Sopen_bracket !Sclose_bracket !S9 !S0 open_bracket close_bracket
+  ;   [:##u :!Sopen_bracket]
+  ;   [:##i :!Sclose_bracket]
+  ;   [:##j :!S9]
+  ;   [:##k :!S0]
+  ;   [:##m :open_bracket]
+  ;   [:##comma :close_bracket]
+  ;   ;; o l period -> !S1 !Sslash !S4
+  ;   [:##o :!S1]
+  ;   [:##l :!Sslash]
+  ;   [:##period :!S4]]}
+  ;
+  ; {:des "v-mode for number pad"
+  ;  :rules 
+  ;  [:v-mode
+  ;   [:u :7]
+  ;   [:i :8]
+  ;   [:o :9]
+  ;   [:j :4]
+  ;   [:k :5]
+  ;   [:l :6]
+  ;   [:m :1]
+  ;   [:comma :2]
+  ;   [:period :3]
+  ;   [:p :!Sequal_sign]
+  ;   [:semicolon :hyphen]
+  ;   [:slash :return_or_enter]
+  ;   [:y :delete_or_backspace]
+  ;   [:h :period]
+  ;   [:n :0]]}]}
+  ;
+  ; {:des "s-mode for punctuation"   ;;    ' \" `    , . &    ; : ~
+  ;  :rules
+  ;   [:s-mode
+  ;    [:##u :quote]
+  ;    [:##i :!Squote]
+  ;    [:##o :grave_accent_and_tilde]
+  ;    [:##j :comma]
+  ;    [:##k :period]
+  ;    [:##l :!S7]
+  ;    [:##m :semicolon]
+  ;    [:##comma :!Ssemicolon]
+  ;    [:##period :!Sgrave_accent_and_tilde]]}
+  ;
+  ; {:des "c-mode for remaining symbols ^ | \\ _ @"
+  ;  :rules 
+  ;  [:c-mode
+  ;   [:##u :!S6]
+  ;   [:##j :!Sbackslash]
+  ;   [:##k :!S2]
+  ;   [:##m :backslash]
+  ;   [:##comma :!Shyphen]]}
+  ;
+  ; {:des "d-mode for arithmetic"    ;;    < > #    + - =    * / %
+  ;  :rules 
+  ;  [:d-mode
+  ;   [:##u     :!Scomma]               ; d -> o        <
+  ;   [:##i    :!Speriod]               ; d -> p        >
+  ;   [:##o         :!S3]               ; d -> o        #
+  ;
+  ;   [:##j         :!Sequal_sign]      ; d -> j        +
+  ;   [:##k         :hyphen]            ; d -> k        -
+  ;   [:##l         :equal_sign]        ; d -> l        =
+  ;
+  ;   [:##m :!S8]                       ; d -> m        *
+  ;   [:##comma :slash]                 ; d -> ,        /
+  ;   [:##period :!S5]]}]}                  ; d -> .        %
+  ;
 
 ;; code won't read cheatsheet section
  ;; ! stand for mandatory
