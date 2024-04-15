@@ -7,6 +7,7 @@ end
 return {
   {
     "hrsh7th/nvim-cmp",
+    enabled = false,
     ---@param opts cmp.ConfigSchema
     opts = function(_, opts)
       local cmp = require("cmp")
@@ -104,6 +105,7 @@ return {
   },
   {
     "neovim/nvim-lspconfig",
+    enabled = false,
     init = function()
       local keys = require("lazyvim.plugins.lsp.keymaps").get()
       keys[#keys + 1] = { "<C-k>", mode = { "i" }, false }
