@@ -47,8 +47,8 @@ return {
 
       -- Use `[g` and `]g` to navigate diagnostics
       -- Use `:CocDiagnostics` to get all diagnostics of current buffer in location list
-      keyset("n", "<leader>ee", "<Plug>(coc-diagnostic-prev)", { silent = true })
-      keyset("n", "<leader>en", "<Plug>(coc-diagnostic-next)", { silent = true })
+      keyset("n", "<leader>ee", "<Plug>(coc-diagnostic-prev-error)", { silent = true })
+      keyset("n", "<leader>en", "<Plug>(coc-diagnostic-next-error)", { silent = true })
 
       -- GoTo code navigation
       keyset("n", "gd", "<Plug>(coc-definition)", { silent = true })
@@ -62,7 +62,7 @@ return {
       keyset("n", "<leader>xr", "<Plug>(coc-rename)", { silent = true })
 
       -- actions
-      keyset("n", "<leader>x.", "<Plug>(coc-codeaction-cursor)", opts)
+      keyset("n", "<leader>x.", "<Plug>(coc-codeaction-cursor)", { silent = true })
 
       vim.opt.statusline:prepend("%{coc#status()}%{get(b:,'coc_current_function','')}")
     end,

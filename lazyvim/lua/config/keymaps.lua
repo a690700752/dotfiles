@@ -87,7 +87,7 @@ end, {
   complete = "file",
 })
 
-cmd("Refactor", function()
+cmd("CocRefactor", function()
   vim.fn.CocActionAsync("codeAction", vim.fn.visualmode(), { "refactor" }, true)
 end, { range = true })
 
