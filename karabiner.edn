@@ -1,9 +1,9 @@
 {:profiles
- {:goku {:default true
-         :alone   80 ; hold for .. ms to register single tap
-         :held    50 ; TODO: not sure what it's for
-         :delay   0 ; time after which the key press is delayed
-         :sim     30}} ; keys need to be pressed within this threshold to be considered simultaneous
+ {:goku {:default true}}
+         ; :alone   80 ; hold for .. ms to register single tap
+         ; :held    50 ; TODO: not sure what it's for
+         ; :delay   0 ; time after which the key press is delayed
+         ; :sim     30}} ; keys need to be pressed within this threshold to be considered simultaneous
 
  :templates
  {:open-a "open -a \"%s\""
@@ -14,7 +14,7 @@
   :kb-magic  [{:vendor_id 1241 :product_id 36}]}
    
  :simlayers
-  {:a-mode {:key :1}}    ; navigation hjkl + tab + enter + page down/up
+ {:a-mode {:key :1}}    ; navigation hjkl + tab + enter + page down/up
 
  :main
  [{:des "swap win and alt"
@@ -38,6 +38,9 @@
   ;  :rules
   ;   [
   ;    [:##backslash :!CTOleft_shift nil {:alone :backslash}]]}
+  
+  ; {:des "shift -> ctrl + space(alone) and shift -> shift"
+  ;  :rules [[:##left_shift  :left_shift nil {:alone :!Tspacebar}]]}
 
   {:des "Map Command-Shift-Option-Control-Period to f19 (avoid System Diagnostics)"
    :rules [[:!CTOSperiod :f19]]}
@@ -71,15 +74,44 @@
     [:escape [["1-layer" 0]] :1-layer]
     [:v [[:open-a "Visual Studio Code"] ["1-layer" 0]] :1-layer]
     [:c [[:open-a "Google Chrome.app"] ["1-layer" 0]] :1-layer]
+    [:s [[:open-a "Safari"] ["1-layer" 0]] :1-layer]
     [:r [[:open-a "warp"] ["1-layer" 0]] :1-layer]
     [:q [[:open-a "QtScrcpy"] ["1-layer" 0]] :1-layer]
     [:d [[:open-a "dingTalk.app"] ["1-layer" 0]] :1-layer]
     [:k [[:open-a "kitty"] ["1-layer" 0]] :1-layer]
     [:w [[:open-a "weChat.app"] ["1-layer" 0]] :1-layer]]}]}
 
-;; code won't read cheatsheet section
- ;; ! stand for mandatory
- ;; # stand for optional
- ;; C T O S for left command control optional shift
- ;; F for fn
- ;; need to prefix C T O S F with ! or #
+;; this is a little bit weird, but it's convenient
+    ;; the rule [:!Ca :!T1]
+    ;; means from command a to control 1
+    ;; :!Ca is keycode :a and prefix a with !C
+
+    ;; here's the definition
+
+    ;; !  | means mandatory
+    ;; #  | means optional
+    ;; C  | left_command
+    ;; T  | left_control
+    ;; O  | left_option
+    ;; S  | left_shift
+    ;; F  | fn
+    ;; Q  | right_command
+    ;; W  | right_control
+    ;; E  | right_option
+    ;; R  | right_shift
+    ;; P  | caps_lock
+    ;; !! | mandatory command + control + optional + shift (hyper)
+    ;; ## | optional any
+
+    ;; examples
+
+    ;; !CTSequal_sign  | mandatory command control shift =
+    ;;                 | which is command control +
+    ;; !O#Sright_arrow | mandatory option optional any right_arrow
+
+    ;; karabiner definition of mandatory and optional
+    ;; https://karabiner-elements.pqrs.org/docs/json/complex-modifications-manipulator-definition/from/modifiers/
+
+    ;; rule [<from> <to>]
+    ;; if simplified modifier is used in <to>, optional(#) definition will be
+    ;; ignored.

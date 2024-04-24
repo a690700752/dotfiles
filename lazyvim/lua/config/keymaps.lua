@@ -42,15 +42,6 @@ map("n", "<leader>xi", "<leader>co", { desc = "Orgnize Imports", remap = true })
 
 map("n", "g;", "`Mzz", { desc = "Jump Modify Position" })
 
-map("n", "vir", "vi(", { desc = "Balanced (" })
-map("n", "var", "va(", { desc = "Balanced (" })
-
-map("n", "vic", "vi{", { desc = "Balanced {" })
-map("n", "vac", "va{", { desc = "Balanced {" })
-
-map("n", "vig", 'vi"', { desc = "Balanced string" })
-map("n", "vag", 'va"', { desc = "Balanced string" })
-
 local cmd = vim.api.nvim_create_user_command
 
 cmd("MdNumberSection", function()

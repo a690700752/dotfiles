@@ -125,22 +125,22 @@ return {
   },
   {
     "echasnovski/mini.surround",
-    keys = function(_, keys)
-      keys[1] = {
-        "S",
-        [[:<C-u>lua MiniSurround.add('visual')<CR>]],
-        desc = "Add surrounding",
-        mode = { "x" },
-      }
-    end,
+    -- keys = function(_, keys)
+    --   keys[1] = {
+    --     "S",
+    --     [[:<C-u>lua MiniSurround.add('visual')<CR>]],
+    --     desc = "Add surrounding",
+    --     mode = { "x" },
+    --   }
+    -- end,
     opts = {
       mappings = {
-        add = "ys",
-        delete = "ds",
+        add = "ms",
+        delete = "md",
         find = "",
         find_left = "",
         highlight = "",
-        replace = "cs",
+        replace = "mr",
         update_n_lines = "",
       },
     },
@@ -161,6 +161,7 @@ return {
   },
   {
     "keaising/im-select.nvim",
+    enabled = false,
     event = "VeryLazy",
     config = function()
       require("im_select").setup({})

@@ -75,6 +75,7 @@ return {
     dependencies = {
       {
         "PaterJason/cmp-conjure",
+        enabled = false,
         config = function()
           local cmp = require("cmp")
           local config = cmp.get_config()
