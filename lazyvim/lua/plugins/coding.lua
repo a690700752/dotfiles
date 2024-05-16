@@ -94,6 +94,7 @@ return {
   },
   {
     "gpanders/nvim-parinfer",
+    enabled = false,
     ft = { "hy", "clojure" },
   },
   {

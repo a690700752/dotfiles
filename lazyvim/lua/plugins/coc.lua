@@ -20,7 +20,10 @@ return {
   {
     "neoclide/coc.nvim",
     branch = "release",
-    event = "LazyFile",
+    event = "VeryLazy",
+    dependencies = {
+      "mini.pairs",
+    },
     config = function()
       -- Always show the signcolumn, otherwise it would shift the text each time
       -- diagnostics appeared/became resolved

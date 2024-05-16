@@ -160,7 +160,7 @@ alias noproxy='export https_proxy= http_proxy= all_proxy='
 proxy
 export no_proxy=::1,127.0.0.1
 # alias ssh="env -i TERM=xterm-256color ssh"
-alias ssh="kitty +kitten ssh"
+# alias ssh="kitty +kitten ssh"
 alias rm='safe-rm'
 ssh-home() {
   env -i TERM=xterm-256color ssh home
