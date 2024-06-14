@@ -7,7 +7,6 @@ end
 return {
   {
     "hrsh7th/nvim-cmp",
-    enabled = false,
     ---@param opts cmp.ConfigSchema
     opts = function(_, opts)
       local cmp = require("cmp")
@@ -16,47 +15,6 @@ return {
       opts.mapping["<C-k>"] = cmp.mapping.select_prev_item({ behavior = cmp.SelectBehavior.Insert })
       opts.mapping["<C-j>"] = cmp.mapping.select_next_item({ behavior = cmp.SelectBehavior.Insert })
     end,
-  },
-  {
-    "ms-jpq/coq_nvim",
-    enabled = false,
-    branch = "coq",
-    event = "InsertEnter",
-    config = function()
-      vim.cmd([[
-        COQnow -s
-        ino <silent><expr> <Esc>   pumvisible() ? "\<C-e><Esc>" : "\<Esc>"
-        ino <silent><expr> <C-c>   pumvisible() ? "\<C-e><C-c>" : "\<C-c>"
-        ino <silent><expr> <BS>    pumvisible() ? "\<C-e><BS>"  : "\<BS>"
-        " ino <silent><expr> <CR>    pumvisible() ? (complete_info().selected == -1 ? "\<C-e><CR>" : "\<C-y>") : "\<CR>"
-        ino <silent><expr> <CR>    pumvisible() ? (complete_info().selected == -1 ? "\<C-n><C-y>" : "\<C-y>") : "\<CR>"
-        ino <silent><expr> <C-j>   pumvisible() ? (complete_info().selected == -1 ? "\<C-n><C-n>" : "\<C-n>") : "\<C-j>"
-        ino <silent><expr> <C-k>   pumvisible() ? "\<C-p>" : "\<C-k>"
-      ]])
-
-      require("coq_3p")({
-        { src = "codeium", short_name = "COD" },
-      })
-      vim.g.coq_settings = {
-        keymap = { bigger_preview = "<F13>", recommended = false, jump_to_mark = "<F13>" },
-      }
-      vim.keymap.set("i", "<Tab>", function()
-        return vim.fn["codeium#Accept"]()
-      end, { expr = true, silent = true })
-    end,
-    dependencies = {
-      {
-        "ms-jpq/coq.artifacts",
-        branch = "artifacts",
-      },
-      {
-        "Exafunction/codeium.vim",
-      },
-      {
-        "ms-jpq/coq.thirdparty",
-        branch = "3p",
-      },
-    },
   },
   {
     "echasnovski/mini.comment",
@@ -107,7 +65,7 @@ return {
   },
   {
     "neovim/nvim-lspconfig",
-    enabled = false,
+    enabled = true,
     init = function()
       local keys = require("lazyvim.plugins.lsp.keymaps").get()
       keys[#keys + 1] = { "<C-k>", mode = { "i" }, false }

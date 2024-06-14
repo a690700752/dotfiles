@@ -98,13 +98,14 @@
                            (+ 2
                               (str/index-of create-styles "({"))
                            (str/join ""
-                                     (map (fn [item]
-                                            (str (nth names 0)
-                                                 ": "
-                                                 (second item)
-                                                 ",")) styles))))))
+                                     (map-indexed (fn [idx item]
+                                                    (str (nth names idx)
+                                                         ": "
+                                                         (second item)
+                                                         ",")) styles))))))
 
 (main "style={{margin: 7}} style={{ margin: 8}} b c const styles = StyleSheet.create({content: {margin: 1}})")
+
 
 (def file (first *command-line-args*))
 

@@ -1,6 +1,15 @@
 # my note
 #   curl https://github.com/a690700752.keys >> ~/.ssh/authorized_keys
 #
+# gradle
+#   systemProp.http.proxyHost=127.0.0.1
+#   systemProp.https.proxyHost=127.0.0.1
+#   systemProp.https.proxyPort=7890
+#   systemProp.http.proxyPort=7890
+#
+#   systemProp.https.nonProxyHosts=nexus.yzw.cn|devops.cscec.com|localhost
+#   systemProp.http.nonProxyHosts=nexus.yzw.cn|devops.cscec.com|localhost
+#
 # zmodload zsh/zprof
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
@@ -193,13 +202,14 @@ export EDITOR='nvim'
 export ANDROID_HOME=$HOME/Library/Android/sdk
 export ANDROID_NDK=$HOME/Library/Android/sdk/ndk/21.4.7075529
 
-export PATH=$PATH:$HOME/bin
+export PATH=$HOME/bin:$PATH
 export PATH=$PATH:$ANDROID_HOME/emulator
 export PATH=$PATH:$ANDROID_HOME/tools
 export PATH=$PATH:$ANDROID_HOME/tools/bin
 export PATH=$PATH:$ANDROID_HOME/platform-tools
 export PATH=$PATH:$HOME/bin/apache-maven-3.8.6/bin
 export PATH="$(brew --prefix)/opt/python@3.10/libexec/bin:$PATH"
+export PATH=$HOME/.config/emacs/bin:$PATH
 
 export LANG="en_US.UTF-8"
 export HOMEBREW_API_DOMAIN="https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles/api"
@@ -215,3 +225,29 @@ export SHELL="zsh"
 # eval $(thefuck --alias)
 
 eval "$(fnm env --use-on-cd)"
+
+startEC() {
+    nohup /Applications/EasyConnect.app/Contents/Resources/bin/EasyMonitor > /dev/null 2>&1 &
+    nohup /Applications/EasyConnect.app/Contents/MacOS/EasyConnect > /dev/null 2>&1 &
+}
+
+fuckEC() {
+    function killprocess()
+    {
+        processname=$1
+        killall $processname >/dev/null 2>&1
+        proxypids=$(ps aux | grep -v grep | grep $processname | awk '{print $2}')
+        for proxypid in $proxypids
+        do
+            kill -9 $proxypid
+        done
+    }
+
+    killprocess svpnservice
+    killprocess CSClient
+    killprocess ECAgentProxy
+    killprocess /Applications/EasyConnect.app/Contents/MacOS/EasyConnect
+
+    pkill ECAgent
+    pkill EasyMonitor
+}
