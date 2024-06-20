@@ -198,7 +198,7 @@ adb-reverse-tcp() {
 # 
 # env
 #
-export EDITOR='nvim'
+export EDITOR='hx'
 export ANDROID_HOME=$HOME/Library/Android/sdk
 export ANDROID_NDK=$HOME/Library/Android/sdk/ndk/21.4.7075529
 

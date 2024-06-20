@@ -74,11 +74,21 @@ return {
     opts = {
       ---@type lspconfig.options
       servers = {
-        tsserver = {
-          init_options = {
-            preferences = {
-              importModuleSpecifierPreference = "relative",
-              importModuleSpecifierEnding = "minimal",
+        -- tsserver = {
+        --   init_options = {
+        --     preferences = {
+        --       importModuleSpecifierPreference = "relative",
+        --       importModuleSpecifierEnding = "minimal",
+        --     },
+        --   },
+        -- },
+        vtsls = {
+          settings = {
+            typescript = {
+              preferences = {
+                importModuleSpecifier = "relative",
+                importModuleSpecifierEnding = "minimal",
+              },
             },
           },
         },

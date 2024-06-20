@@ -36,9 +36,9 @@ end, { desc = "Rename" })
 
 map("n", "<leader>xi", "<leader>co", { desc = "Orgnize Imports", remap = true })
 
--- map("n", "<leader>x.", function()
---   vim.lsp.buf.code_action()
--- end, { desc = "Code Action" })
+map("n", "<leader>x.", function()
+  vim.lsp.buf.code_action()
+end, { desc = "Code Action" })
 
 map("n", "g;", "`Mzz", { desc = "Jump Modify Position" })
 

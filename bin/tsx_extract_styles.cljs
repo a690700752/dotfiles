@@ -4,107 +4,101 @@
   (:require [clojure.string :as str]
             ["fs" :as fs]))
 
-(defn str-index-of-any [s any offset]
-  (loop [i offset]
-    (if (< i (count s))
-      (if (str/includes? any (nth s i))
-        i
-        (recur (inc i)))
-      nil)))
+(defn extract-obj-styles
+  [s]
+  (let [matches
+        (re-seq #"[sS]tyle={({[\w\W]*?})}" s)]
+    (map #(str/trim (second %)) matches)))
 
-(str-index-of-any "he)l(lo" "()" 3)
-;; => 4
+(extract-obj-styles "style={{color:'red', fontSize: 16, margin: 10}}
+                    style={{color: 'blue', fontSize: 18, margin: 20}}")
 
 
-(defn find-nested-pair [s pair offset]
-  (let [open? (fn [c] (= c (nth pair 0)))
-        close? (fn [c] (= c (nth pair 1)))
-        open-idx (str/index-of s (nth pair 0) offset)]
-    (if (nil? open-idx) nil
-        (loop [i open-idx cnt 0]
-          (let [idx (str-index-of-any s pair i)]
-            (cond (and idx (open? (nth s idx))) (recur (inc idx) (inc cnt))
-                  (and idx (close? (nth s idx))) (cond
-                                                   (= cnt 1) [open-idx idx]
-                                                   (> cnt 1) (recur (inc idx) (dec cnt))
-                                                   :else (recur (inc idx) cnt))
-                  :else nil))))))
+(defn extract-arr-styles
+  [s]
+  (let [matches (re-seq #"[sS]tyle={\[([\w\W]*?)\]}" s)]
+    (map #(second %) matches)))
+
+(extract-arr-styles "titleStyle={[
+                     {color:'red', fontSize: 16, margin: 10}, {color: 'blue', fontSize: 18, margin: 20}
+                     ]}")
 
 
-(find-nested-pair "12)34 () 1234 " "()" 0)
-;; => [6 7]
+(defn split-arr-styles-idx
+  "split 
+  '{ flexDirection: 'row', backgroundColor: '#F5F6F7', borderRadius: 2, paddingVertical: 15 }, props.style'
+  to [{xxx}, props.style]"
+  [s]
+  (loop [idx 0
+         res []
+         depth 0]
+    (if (>= idx (count s))
+      res
+      (let [c (get s idx)]
+        (cond
+          (and (= c \,) (zero? depth))
+          (recur (inc idx) (conj res idx) depth)
 
+          (= c \{)
+          (recur (inc idx) res (inc depth))
 
-(defn find-styles [s]
-  (->> (re-seq #"[Ss]tyle={({[\w\W]*?})}" s)
-       (filterv #(not (str/index-of (second %) "// no extract")))))
+          (= c \})
+          (recur (inc idx) res (dec depth))
 
-(find-styles "style={{margin: 9}}")
-;; => (["style={{margin: 9}}" "{margin: 9}"])
-(find-styles "style={{margin: 9}} style={{// no extract \nmargin: 8}}")
+          :else
+          (recur (inc idx) res depth))))))
 
-(defn find-create-styles [s]
-  (let [start-idx (str/index-of s "const styles = StyleSheet.create")]
-    (if start-idx
-      (let [pair-idxes
-            (find-nested-pair s "()" start-idx)]
-        (if pair-idxes
-          [start-idx (if (and
-                          (< (inc (second pair-idxes)) (count s))
-                          (= ";" (nth s (inc (second pair-idxes)))))
-                       (+ 2 (second pair-idxes))
-                       (inc (second pair-idxes)))]
-          nil))
-      nil)))
+(defn split-str-by-idxs [s idxs]
+  (let [ranges (partition 2 1 (concat [0] idxs [(count s)]))]
+    (map (fn [[start end]] (subs s start end)) ranges)))
 
-(find-create-styles "const styles = StyleSheet.create({})")
-;; => [0 36]
+(defn split-arr-style [s]
+  (let [idxes (split-arr-styles-idx s)
+        styles-with-comma (split-str-by-idxs s idxes)]
+    (map (fn [s]
+           (str/trim
+            (if (= \, (first s))
+              (subs s 1)
+              s))) styles-with-comma)))
 
+(defn timestamp []
+  (js/Date.now))
 
-(defn split-code-and-create-styles [s]
-  (let [create-styles-block (find-create-styles s)]
-    (if create-styles-block
-      [(str
-        (subs s 0 (first create-styles-block))
-        (subs s (second create-styles-block)))
-       (subs s (first create-styles-block) (second create-styles-block))]
-      [s "const styles = StyleSheet.create({})"])))
+(defn gen-names [len]
+  (let [now (timestamp)
+        arr (range len)]
+    (map #(str "rename_" now "_" %) arr)))
 
-(split-code-and-create-styles "a b c const styles = StyleSheet.create({});")
-;; => ["a b c " "const styles = StyleSheet.create({});"]
+(defn extract-styles [s]
+  (let [obj-styles
+        (extract-obj-styles s)
 
-(split-code-and-create-styles "a b c const styles = StyleSheet.create({}); d e f")
-;; => ["a b c  d e f" "const styles = StyleSheet.create({});"]
+        aar-styles
+        (flatten (map #(split-arr-style %) (extract-arr-styles s)))
 
-(defn str-insert-by-ancher [s ancher insert]
-  (str (subs s 0 ancher) insert (subs s ancher)))
+        all-styles
+        (filter #(and (str/starts-with? % "{")
+                      (str/ends-with? % "}")
+                      (not (str/index-of % "// no extract")))
 
-(str-insert-by-ancher "abc" 2 "def")
+                (concat obj-styles aar-styles))
 
-(defn gen_random_names [cnt]
-  (let [now (js/Date.now)]
-    (map #(str "rename_" now "_" %) (range cnt))))
+        names (gen-names (count all-styles))
 
-(gen_random_names 5)
+        replaced-s (reduce (fn [s [old new]] (str/replace s old (str "styles." new))) s (map vector all-styles names))
 
+        new-styles-str (str/join (map (fn [n s] (str n ": " s ",\n")) names all-styles))
 
-(defn main [s]
-  (let [[code create-styles] (split-code-and-create-styles s)
-        styles (find-styles code)
-        names (gen_random_names (count styles))]
-    (str
-     (reduce-kv #(str/replace %1 (nth %3 1) (str "styles." (nth names %2))) code styles)
-     (str-insert-by-ancher create-styles
-                           (+ 2
-                              (str/index-of create-styles "({"))
-                           (str/join ""
-                                     (map-indexed (fn [idx item]
-                                                    (str (nth names idx)
-                                                         ": "
-                                                         (second item)
-                                                         ",")) styles))))))
+        create-styles-pos  (str/index-of replaced-s "const styles = StyleSheet.create({")
 
-(main "style={{margin: 7}} style={{ margin: 8}} b c const styles = StyleSheet.create({content: {margin: 1}})")
+        replaced-and-inserted-s
+        (if create-styles-pos
+          (let [insert-pos (+ create-styles-pos (count "const styles = StyleSheet.create({"))]
+            (str (subs replaced-s 0 insert-pos)
+                 new-styles-str
+                 (subs replaced-s insert-pos)))
+          (str replaced-s "\nconst styles = StyleSheet.create({\n" new-styles-str "\n});"))]
+    replaced-and-inserted-s))
 
 
 (def file (first *command-line-args*))
@@ -112,5 +106,5 @@
 (if (not file) (println "Please specify a file")
     (->>
      (fs/readFileSync file "utf-8")
-     (main)
+     (extract-styles)
      (fs/writeFileSync file)))
