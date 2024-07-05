@@ -79,6 +79,7 @@
     [:q [[:open-a "QtScrcpy"] ["1-layer" 0]] :1-layer]
     [:d [[:open-a "dingTalk.app"] ["1-layer" 0]] :1-layer]
     [:k [[:open-a "kitty"] ["1-layer" 0]] :1-layer]
+    [:t [[:open-a "Terminal"] ["1-layer" 0]] :1-layer]
     [:w [[:open-a "weChat.app"] ["1-layer" 0]] :1-layer]]}]}
 
 ;; this is a little bit weird, but it's convenient

@@ -30,9 +30,10 @@ map("n", "<leader>fs", "<cmd>w<cr>", { desc = "Save" })
 map("n", "<leader>fS", "<cmd>wa<cr>", { desc = "Save All" })
 map("n", "<leader><tab>", "<cmd>e #<cr>", { desc = "Last Buffer" })
 map("n", "<leader>'", "<leader>fT", { desc = "Terminal (cwd)", remap = true })
-map("n", "<leader>xr", function()
-  vim.lsp.buf.rename()
-end, { desc = "Rename" })
+-- map("n", "<leader>xr", function()
+--   vim.lsp.buf.rename()
+-- end, { desc = "Rename" })
+map("n", "<leader>xr", ":IncRename ", { desc = "Rename" })
 
 map("n", "<leader>xi", "<leader>co", { desc = "Orgnize Imports", remap = true })
 

@@ -140,6 +140,7 @@ source $ZSH/oh-my-zsh.sh
 alias vim='nvim'
 alias t='todo.sh -c'
 alias gcz='npx -g git-cz'
+alias ai='aichat --light-theme'
 
 [[ ! -f ~/.p.env ]] || source ~/.p.env
 
@@ -198,7 +199,7 @@ adb-reverse-tcp() {
 # 
 # env
 #
-export EDITOR='hx'
+export EDITOR='nvim'
 export ANDROID_HOME=$HOME/Library/Android/sdk
 export ANDROID_NDK=$HOME/Library/Android/sdk/ndk/21.4.7075529
 
