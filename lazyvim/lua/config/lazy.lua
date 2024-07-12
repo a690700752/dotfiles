@@ -6,25 +6,31 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(vim.env.LAZY or lazypath)
 
-local function dump(o)
-  if type(o) == "table" then
-    local s = "{ "
-    for k, v in pairs(o) do
-      if type(k) ~= "number" then
-        k = '"' .. k .. '"'
+local function replaceFunctionsWithStrings(t)
+  local function copyTable(tbl)
+    local newTbl = {}
+    for k, v in pairs(tbl) do
+      if type(v) == "function" then
+        newTbl[k] = "function"
+      elseif type(v) == "table" then
+        newTbl[k] = copyTable(v)
+      else
+        newTbl[k] = v
       end
-      s = s .. "[" .. k .. "] = " .. dump(v) .. ","
     end
-    return s .. "} "
-  else
-    return tostring(o)
+    return newTbl
   end
+
+  return copyTable(t)
 end
 
 function _G.pprint(...)
-  -- local objects = vim.tbl_map(vim.inspect, { ... })
-  -- print(unpack(objects))
-  print(dump(...))
+  local args = { ... }
+  local s = ""
+  for _, v in ipairs(args) do
+    s = s .. vim.json.encode(replaceFunctionsWithStrings(v))
+  end
+  print(s)
 end
 
 require("lazy").setup({

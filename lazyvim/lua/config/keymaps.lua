@@ -8,6 +8,7 @@ vim.keymap.del("n", "<leader><tab><tab>")
 vim.keymap.del("n", "<leader><tab>]")
 vim.keymap.del("n", "<leader><tab>d")
 vim.keymap.del("n", "<leader><tab>[")
+vim.keymap.del("n", "<leader><tab>o")
 
 local map = vim.keymap.set
 
@@ -42,6 +43,8 @@ map("n", "<leader>x.", function()
 end, { desc = "Code Action" })
 
 map("n", "g;", "`Mzz", { desc = "Jump Modify Position" })
+
+map("n", "<leader>pp", "<leader>fp", { desc = "Projects", remap = true })
 
 local cmd = vim.api.nvim_create_user_command
 
@@ -91,20 +94,20 @@ cmd("CopyRelativePath", function()
   vim.fn.setreg("+", vim.fn.expand("%"))
 end, {})
 
-local exec_selection = function(args)
-  -- Use args.line1 and args.line2 to get the selected range
-  local line_start, line_end = args.line1, args.line2
-  -- Read the selected lines as Lua code
-  local lines = vim.api.nvim_buf_get_lines(0, line_start - 1, line_end, false)
-  local code = table.concat(lines, "\n")
-
-  -- Execute the code in the Lua environment of Neovim
-  local result = loadstring(code)()
-
-  -- If the code has returned a result, print it
-  if result then
-    print(result)
-  end
-end
-
-cmd("ExecSelection", exec_selection, { range = true })
+-- local exec_selection = function(args)
+--   -- Use args.line1 and args.line2 to get the selected range
+--   local line_start, line_end = args.line1, args.line2
+--   -- Read the selected lines as Lua code
+--   local lines = vim.api.nvim_buf_get_lines(0, line_start - 1, line_end, false)
+--   local code = table.concat(lines, "\n")
+--
+--   -- Execute the code in the Lua environment of Neovim
+--   local result = loadstring(code)()
+--
+--   -- If the code has returned a result, print it
+--   if result then
+--     print(result)
+--   end
+-- end
+--
+-- cmd("ExecSelection", exec_selection, { range = true })
