@@ -211,6 +211,7 @@ export PATH=$PATH:$ANDROID_HOME/platform-tools
 export PATH=$PATH:$HOME/bin/apache-maven-3.8.6/bin
 export PATH="$(brew --prefix)/opt/python@3.10/libexec/bin:$PATH"
 export PATH=$HOME/.config/emacs/bin:$PATH
+export PATH=$HOME/bin/command-line-tools/sdk/HarmonyOS-NEXT-DB1/openharmony/toolchains:$PATH
 
 export LANG="en_US.UTF-8"
 export HOMEBREW_API_DOMAIN="https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles/api"

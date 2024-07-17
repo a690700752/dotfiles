@@ -46,19 +46,17 @@ map("n", "g;", "`Mzz", { desc = "Jump Modify Position" })
 
 map("n", "<leader>pp", "<leader>fp", { desc = "Projects", remap = true })
 
-local cmd = vim.api.nvim_create_user_command
-
-cmd("MdNumberSection", function()
+vim.api.nvim_create_user_command("MdNumberSection", function()
   vim.cmd("w")
   vim.cmd("!md-number-section %")
 end, {})
 
-cmd("TsxExtractStyles", function()
+vim.api.nvim_create_user_command("TsxExtractStyles", function()
   vim.cmd("w")
   vim.cmd("!tsx-extract-styles %")
 end, {})
 
-cmd("FileInFolder", function(tbl)
+vim.api.nvim_create_user_command("FileInFolder", function(tbl)
   -- call Telescope find_files with a custom cwd
   require("telescope.builtin").find_files({
     cwd = tbl.args,
@@ -70,7 +68,7 @@ end, {
   complete = "file",
 })
 
-cmd("GrepInFolder", function(tbl)
+vim.api.nvim_create_user_command("GrepInFolder", function(tbl)
   -- call Telescope live_grep with a custom cwd
   require("telescope.builtin").live_grep({
     cwd = tbl.args,
@@ -82,15 +80,15 @@ end, {
   complete = "file",
 })
 
-cmd("CocRefactor", function()
+vim.api.nvim_create_user_command("CocRefactor", function()
   vim.fn.CocActionAsync("codeAction", vim.fn.visualmode(), { "refactor" }, true)
 end, { range = true })
 
-cmd("CopyAbsolutePath", function()
+vim.api.nvim_create_user_command("CopyAbsolutePath", function()
   vim.fn.setreg("+", vim.fn.expand("%:p"))
 end, {})
 
-cmd("CopyRelativePath", function()
+vim.api.nvim_create_user_command("CopyRelativePath", function()
   vim.fn.setreg("+", vim.fn.expand("%"))
 end, {})
 
@@ -110,4 +108,6 @@ end, {})
 --   end
 -- end
 --
--- cmd("ExecSelection", exec_selection, { range = true })
+-- vim.api.nvim_create_user_command("ExecSelection", exec_selection, { range = true })
+
+vim.api.nvim_create_user_command("InsertOutput", require("config/shell_command").run_shell_command, {})
