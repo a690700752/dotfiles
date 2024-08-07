@@ -105,7 +105,7 @@ plugins=(
   brew
   rbenv
   fnm
-  adb
+  # adb
   yarn
   # vi-mode
 )
@@ -139,6 +139,7 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias vim='nvim'
 alias t='todo.sh -c'
+alias tla='todo.sh -c ls | grep \(A'
 alias gcz='npx -g git-cz'
 alias ai='aichat --light-theme'
 
