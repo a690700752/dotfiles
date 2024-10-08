@@ -1,0 +1,41 @@
+#!/usr/bin/env python3
+
+import sys
+import os
+import subprocess
+
+
+def download_and_convert(url, output_filename):
+    # 步骤1: 使用 you-get 下载视频
+    temp_video = "temp_video"
+    # 步骤1: 使用 you-get 下载视频
+    download_cmd = ["you-get", url, "-O", temp_video]
+    subprocess.run(download_cmd, check=True)
+
+    # 步骤2: 使用 ffmpeg 转换为 mp3
+    convert_cmd = [
+        "ffmpeg",
+        "-i",
+        temp_video + ".mp4",
+        "-q:a",
+        "0",
+        "-map",
+        "a",
+        f"{output_filename}.mp3",
+    ]
+    subprocess.run(convert_cmd, check=True)
+
+    # 步骤3: 删除临时文件
+    os.remove(temp_video + ".mp4")
+
+
+if __name__ == "__main__":
+    if len(sys.argv) != 3:
+        print("用法: you-geta <url> <文件名>")
+        sys.exit(1)
+
+    url = sys.argv[1]
+    output_filename = sys.argv[2]
+
+    download_and_convert(url, output_filename)
+    print(f"下载并转换完成。输出文件: {output_filename}.mp3")

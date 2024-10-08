@@ -138,8 +138,11 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias vim='nvim'
-alias t='todo.sh -c'
+alias tls='todo.sh -c ls'
+alias tadd='todo.sh -c add'
 alias tla='todo.sh -c ls | grep \(A'
+alias tdo='todo.sh -c do'
+alias tedit='todo.sh -c edit'
 alias gcz='npx -g git-cz'
 alias ai='aichat --light-theme'
 
@@ -196,6 +199,7 @@ adb-proxy() {
 adb-reverse-tcp() {
   adb reverse tcp:$1 tcp:$1
 }
+alias feilian-vpn="sudo route delete '0/1' && sudo route -n add -host 10.107.15.99 -interface utun3"
 
 # 
 # env
@@ -212,7 +216,7 @@ export PATH=$PATH:$ANDROID_HOME/platform-tools
 export PATH=$PATH:$HOME/bin/apache-maven-3.8.6/bin
 export PATH="$(brew --prefix)/opt/python@3.10/libexec/bin:$PATH"
 export PATH=$HOME/.config/emacs/bin:$PATH
-export PATH=$HOME/bin/command-line-tools/sdk/HarmonyOS-NEXT-DB1/openharmony/toolchains:$PATH
+# export PATH=$HOME/bin/command-line-tools/sdk/HarmonyOS-NEXT-DB1/openharmony/toolchains:$PATH
 
 export LANG="en_US.UTF-8"
 export HOMEBREW_API_DOMAIN="https://mirrors.tuna.tsinghua.edu.cn/homebrew-bottles/api"
@@ -254,3 +258,7 @@ fuckEC() {
     pkill ECAgent
     pkill EasyMonitor
 }
+
+# export NVM_DIR="$HOME/.nvm"
+# [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
+# [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion

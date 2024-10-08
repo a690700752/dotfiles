@@ -3,7 +3,7 @@
          ; :alone   80 ; hold for .. ms to register single tap
          ; :held    50 ; TODO: not sure what it's for
          ; :delay   0 ; time after which the key press is delayed
-         ; :sim     30}} ; keys need to be pressed within this threshold to be considered simultaneous
+         ; :sim     30 ; keys need to be pressed within this threshold to be considered simultaneous
 
  :templates
  {:open-a "open -a \"%s\""
@@ -12,9 +12,9 @@
  :devices
  {:kb-mac [{:vendor_id 1452 :product_id 833}]
   :kb-magic  [{:vendor_id 1241 :product_id 36}]}
-   
+
  :simlayers
- {:a-mode {:key :1}}    ; navigation hjkl + tab + enter + page down/up
+ {:1-mode {:key :1}}    ; navigation hjkl + tab + enter + page down/up
 
  :main
  [{:des "swap win and alt"
@@ -22,8 +22,8 @@
    [[:left_command :left_option :kb-magic]
     [:left_option :left_command :kb-magic]]}
     ; [:right_control :right_option :kb-magic]
-    ; [:right_option :right_command :kb-magic]]}
- 
+    ; [:right_option :right_command :kb-magic]
+
   {:des "swap ctrl and caps"
    :rules
    [[:##left_control :caps_lock]
@@ -38,7 +38,7 @@
   ;  :rules
   ;   [
   ;    [:##backslash :!CTOleft_shift nil {:alone :backslash}]]}
-  
+
   ; {:des "shift -> ctrl + space(alone) and shift -> shift"
   ;  :rules [[:##left_shift  :left_shift nil {:alone :!Tspacebar}]]}
 
@@ -51,9 +51,9 @@
   {:des "Map Command-Shift-Option-Control-w to f17 (avoid Wifi Diagnostics)"
    :rules [[:!CTOSw :f17]]}
 
-  {:des "a-mode for hjkl movement and nm enter and ui tab and ,. PageDn/Up"
+  {:des "1-mode for hjkl movement and nm enter and ui tab and ,. PageDn/Up"
    :rules
-   [:a-mode
+   [:1-mode
     [:##h :left_arrow]
     [:##j :down_arrow]
     [:##k :up_arrow]
@@ -69,18 +69,33 @@
 
   {:des "right option as leader key"
    :rules
-   [[:right_option ["1-layer" 1] :kb-magic]
-    [:right_command ["1-layer" 1] :kb-mac]
-    [:escape [["1-layer" 0]] :1-layer]
-    [:v [[:open-a "Visual Studio Code"] ["1-layer" 0]] :1-layer]
-    [:c [[:open-a "Google Chrome.app"] ["1-layer" 0]] :1-layer]
-    [:s [[:open-a "Safari"] ["1-layer" 0]] :1-layer]
-    [:r [[:open-a "warp"] ["1-layer" 0]] :1-layer]
-    [:q [[:open-a "QtScrcpy"] ["1-layer" 0]] :1-layer]
-    [:d [[:open-a "dingTalk.app"] ["1-layer" 0]] :1-layer]
-    [:k [[:open-a "kitty"] ["1-layer" 0]] :1-layer]
-    [:t [[:open-a "Terminal"] ["1-layer" 0]] :1-layer]
-    [:w [[:open-a "weChat.app"] ["1-layer" 0]] :1-layer]]}]}
+   [[:right_option ["ralt-layer" 1] :kb-magic]
+    [:right_command ["ralt-layer" 1] :kb-mac]
+    [:escape [["ralt-layer" 0]] :ralt-layer]
+    ;; [:v [[:open-a "Visual Studio Code"] ["ralt-layer" 0]] :ralt-layer]
+    [:v [[:open-a "Cursor"] ["ralt-layer" 0]] :ralt-layer]
+    [:c [[:open-a "Google Chrome.app"] ["ralt-layer" 0]] :ralt-layer]
+    [:s [[:open-a "Safari"] ["ralt-layer" 0]] :ralt-layer]
+    [:r [[:open-a "warp"] ["ralt-layer" 0]] :ralt-layer]
+    [:q [[:open-a "QtScrcpy"] ["ralt-layer" 0]] :ralt-layer]
+    [:d [[:open-a "dingTalk.app"] ["ralt-layer" 0]] :ralt-layer]
+    [:k [[:open-a "kitty"] ["ralt-layer" 0]] :ralt-layer]
+    [:t [[:open-a "Terminal"] ["ralt-layer" 0]] :ralt-layer]
+    [:w [[:open-a "weChat.app"] ["ralt-layer" 0]] :ralt-layer]
+    [:n [["num-layer" 1] ["ralt-layer" 0]] :ralt-layer]]}
+
+  {:des "num-layer for number keyboard"
+   :rules
+   [[:escape [["num-layer" 0]] :num-layer]
+    [:m :0 :num-layer]
+    [:comma :0 :num-layer]
+    [:j :1 :num-layer]
+    [:k :2 :num-layer]
+    [:l :3 :num-layer]
+    [:u :4 :num-layer]
+    [:i :5 :num-layer]
+    [:o :6 :num-layer]
+    [:0 :keypad_asterisk :num-layer]]}]}
 
 ;; this is a little bit weird, but it's convenient
     ;; the rule [:!Ca :!T1]

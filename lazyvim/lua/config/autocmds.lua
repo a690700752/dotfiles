@@ -40,34 +40,14 @@ vim.api.nvim_create_autocmd("WinLeave", {
   end,
 })
 
--- local function switch_input_method()
---   local cur_pos = vim.api.nvim_win_get_cursor(0)
---   local line = vim.api.nvim_get_current_line()
---   local col = cur_pos[2]
---   if col > 0 and col <= #line then
---     local utf8 = require("utils.utf8")
---     local lineUtf8 = utf8.new(line)
---     local utf8Idx = utf8.byteIdx2Idx(lineUtf8, col)
---     local left_char = utf8.get(lineUtf8, utf8Idx)
---     local right_char = utf8.get(lineUtf8, utf8Idx + 1)
---     if (left_char ~= nil and #left_char > 1) or (right_char ~= nil and #right_char > 1) then
---       -- print("zh")
---       io.popen("macism com.apple.inputmethod.SCIM.ITABC")
---     else
---       -- print("en")
---       io.popen("macism com.apple.keylayout.ABC")
---     end
---   end
--- end
---
--- vim.api.nvim_create_autocmd("InsertEnter", {
---   callback = function()
---     switch_input_method()
---   end,
--- })
---
--- vim.api.nvim_create_autocmd("InsertLeave", {
---   callback = function()
---     io.popen("macism com.apple.keylayout.ABC")
---   end,
--- })
+-- 创建一个自动命令组来管理自动命令
+local group = vim.api.nvim_create_augroup("MarkdownSettings", { clear = true })
+
+-- 当文件类型是 markdown 时，设置 nowrap
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = "markdown",
+  group = group,
+  callback = function()
+    vim.wo.wrap = false
+  end,
+})
