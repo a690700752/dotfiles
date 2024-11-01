@@ -55,7 +55,7 @@ return {
       })
     end,
     keys = {
-      { "<leader>*", mode = { "n", "v" }, "<cmd>Telescope grep_string<cr>", desc = "Live Grep" },
+      -- { "<leader>*", mode = { "n", "v" }, "<cmd>Telescope grep_string<cr>", desc = "Live Grep" },
       {
         "<leader>*",
         mode = { "n", "v" },

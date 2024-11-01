@@ -109,5 +109,3 @@ end, {})
 -- end
 --
 -- vim.api.nvim_create_user_command("ExecSelection", exec_selection, { range = true })
-
-vim.api.nvim_create_user_command("InsertOutput", require("config/shell_command").run_shell_command, {})

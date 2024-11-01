@@ -209,13 +209,13 @@ export ANDROID_HOME=$HOME/Library/Android/sdk
 export ANDROID_NDK=$HOME/Library/Android/sdk/ndk/21.4.7075529
 
 export PATH=$HOME/bin:$PATH
+export PATH=$HOME/go/bin:$PATH
 export PATH=$PATH:$ANDROID_HOME/emulator
 export PATH=$PATH:$ANDROID_HOME/tools
 export PATH=$PATH:$ANDROID_HOME/tools/bin
 export PATH=$PATH:$ANDROID_HOME/platform-tools
 export PATH=$PATH:$HOME/bin/apache-maven-3.8.6/bin
 export PATH="$(brew --prefix)/opt/python@3.10/libexec/bin:$PATH"
-export PATH=$HOME/.config/emacs/bin:$PATH
 # export PATH=$HOME/bin/command-line-tools/sdk/HarmonyOS-NEXT-DB1/openharmony/toolchains:$PATH
 
 export LANG="en_US.UTF-8"
