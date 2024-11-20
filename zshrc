@@ -144,7 +144,6 @@ alias tla='todo.sh -c ls | grep \(A'
 alias tdo='todo.sh -c do'
 alias tedit='todo.sh -c edit'
 alias gcz='npx -g git-cz'
-alias ai='aichat --light-theme'
 
 [[ ! -f ~/.p.env ]] || source ~/.p.env
 
