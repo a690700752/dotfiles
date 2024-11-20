@@ -6,14 +6,14 @@
 # @raycast.mode silent
 
 # Optional parameters:
-# @raycast.icon 📋
+# @raycast.icon 
 
 import sys
 import subprocess
 import requests
 
 API_KEY = "lpVmz5x9ouw7Z5"
-API_URL = "https://clip.998868.xyz"
+API_URL = "https://clip.998868.xyz/api/clip"
 
 
 def write_clipboard(content):

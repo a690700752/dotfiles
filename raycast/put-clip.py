@@ -8,17 +8,12 @@
 # Optional parameters:
 # @raycast.icon 📋
 
-
-import os
-
-print(os.environ["PATH"])
-
 import sys
 import subprocess
 import requests
 
 API_KEY = "lpVmz5x9ouw7Z5"
-API_URL = "https://clip.998868.xyz"
+API_URL = "https://clip.998868.xyz/api/clip"
 
 
 def read_clipboard():
