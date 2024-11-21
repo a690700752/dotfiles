@@ -6,11 +6,12 @@
 # @raycast.mode silent
 
 # Optional parameters:
-# @raycast.icon 
+# @raycast.icon 📋
 
 import sys
 import subprocess
 import requests
+import os
 
 API_KEY = "lpVmz5x9ouw7Z5"
 API_URL = "https://clip.998868.xyz/api/clip"
@@ -19,7 +20,14 @@ API_URL = "https://clip.998868.xyz/api/clip"
 def write_clipboard(content):
     """Write content to clipboard using pbcopy command."""
     try:
-        process = subprocess.Popen(["pbcopy"], stdin=subprocess.PIPE)
+        process = subprocess.Popen(
+            ["pbcopy"],
+            stdin=subprocess.PIPE,
+            env={
+                **os.environ,
+                "LANG": "en_US.UTF-8",
+            },
+        )
         process.communicate(content.encode("utf-8"))
         return True
     except Exception as e:
@@ -49,7 +57,7 @@ def main():
     content = get_from_api()
     if content is not None:
         if write_clipboard(content):
-            print("Clipboard updated successfully")
+            print("Clipboard updated successfully", content)
         else:
             print("Failed to update clipboard")
     else:

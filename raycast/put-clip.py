@@ -11,6 +11,7 @@
 import sys
 import subprocess
 import requests
+import os
 
 API_KEY = "lpVmz5x9ouw7Z5"
 API_URL = "https://clip.998868.xyz/api/clip"
@@ -19,7 +20,12 @@ API_URL = "https://clip.998868.xyz/api/clip"
 def read_clipboard():
     """Read clipboard content using pbpaste command."""
     try:
-        result = subprocess.run(["pbpaste"], capture_output=True, text=True)
+        result = subprocess.run(
+            ["pbpaste"],
+            capture_output=True,
+            text=True,
+            env={**os.environ, "LANG": "en_US.UTF-8"},
+        )
         return result.stdout
     except Exception as e:
         print(f"Error reading clipboard: {e}")
