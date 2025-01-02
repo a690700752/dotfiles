@@ -57,7 +57,7 @@ def main():
     content = get_from_api()
     if content is not None:
         if write_clipboard(content):
-            print("Clipboard updated successfully", content)
+            print("Clipboard updated successfully")
         else:
             print("Failed to update clipboard")
     else:

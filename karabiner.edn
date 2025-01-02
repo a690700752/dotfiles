@@ -19,8 +19,8 @@
  :main
  [{:des "swap win and alt"
    :rules
-   [[:left_command :left_option :kb-magic]
-    [:left_option :left_command :kb-magic]]}
+   [[:##left_command :left_option :kb-magic]
+    [:##left_option :left_command :kb-magic]]}
     ; [:right_control :right_option :kb-magic]
     ; [:right_option :right_command :kb-magic]
 
@@ -63,6 +63,8 @@
     [:##u [:open-g "raycast://extensions/raycast/window-management/left-half"]]
     [:##i [:open-g "raycast://extensions/raycast/window-management/right-half"]]
     [:##y [:open-g "raycast://extensions/raycast/window-management/maximize"]]
+    [:##o [:open-g "raycast://extensions/raycast/window-management/previous-display"]]
+    [:##p [:open-g "raycast://extensions/raycast/window-management/next-display"]]
     [:##v [:open-g "raycast://extensions/raycast/clipboard-history/clipboard-history"]]
     [:comma :page_down]
     [:period :page_up]]}

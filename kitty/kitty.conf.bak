@@ -1515,6 +1515,6 @@ macos_option_as_alt yes
 
 
 # BEGIN_KITTY_THEME
-# Gruvbox Light
+# Atom One Light
 include current-theme.conf
 # END_KITTY_THEME

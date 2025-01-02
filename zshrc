@@ -138,12 +138,14 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 alias vim='nvim'
+alias vi='nvim'
 alias tls='todo.sh -c ls'
 alias tadd='todo.sh -c add'
 alias tla='todo.sh -c ls | grep \(A'
 alias tdo='todo.sh -c do'
 alias tedit='todo.sh -c edit'
-alias gcz='npx -g git-cz'
+alias gcz='cz'
+alias windsurf='open -a Windsurf'
 
 [[ ! -f ~/.p.env ]] || source ~/.p.env
 
@@ -225,6 +227,7 @@ export HOMEBREW_CORE_GIT_REMOTE="https://mirrors.tuna.tsinghua.edu.cn/git/homebr
 export HOMEBREW_PIP_INDEX_URL="https://pypi.tuna.tsinghua.edu.cn/simple"
 
 export SHELL="zsh"
+export LEFTHOOK=0
 
 # zprof
 
