@@ -57,7 +57,6 @@ ssh-vps() {
 alias adb-input-menu='adb shell input keyevent 82'
 alias adb-scrcpy='scrcpy -S -m 1080 >/dev/null 2>&1 &'
 alias adb-noproxy="adb shell settings put global http_proxy :0"
-alias aider='all_proxy= aider'
 adb-proxy() {
   if [ -z "$1" ]; then
 	echo "Usage: adb-proxy <proxy-port>"
