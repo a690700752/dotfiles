@@ -14,7 +14,7 @@ import requests
 import os
 
 API_KEY = "lpVmz5x9ouw7Z5"
-API_URL = "https://clip.998868.xyz/api/clip"
+API_URL = "https://clip.941014.xyz/api/clip"
 
 
 def write_clipboard(content):
