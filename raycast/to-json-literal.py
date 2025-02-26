@@ -15,7 +15,11 @@ import json
 
 def read_clipboard():
     """Read content from macOS clipboard using pbpaste"""
-    return subprocess.run(["pbpaste"], capture_output=True, text=True).stdout.strip()
+    result = subprocess.run(["pbpaste"], capture_output=True)
+    try:
+        return result.stdout.decode('utf-8').strip()
+    except UnicodeDecodeError:
+        return result.stdout.decode('latin1').strip()
 
 
 def write_clipboard(content):
