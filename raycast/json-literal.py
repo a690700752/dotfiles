@@ -2,8 +2,8 @@
 
 # Required parameters:
 # @raycast.schemaVersion 1
-# @raycast.title To JSON Literal
-# @raycast.mode fullOutput
+# @raycast.title JSON Literal
+# @raycast.mode silent
 
 # Optional parameters:
 # @raycast.icon 📖
@@ -11,15 +11,15 @@
 
 import subprocess
 import json
+import os
+
+os.environ["LANG"] = "en_US.UTF-8"
 
 
 def read_clipboard():
     """Read content from macOS clipboard using pbpaste"""
     result = subprocess.run(["pbpaste"], capture_output=True)
-    try:
-        return result.stdout.decode('utf-8').strip()
-    except UnicodeDecodeError:
-        return result.stdout.decode('latin1').strip()
+    return result.stdout.decode().strip()
 
 
 def write_clipboard(content):
@@ -29,7 +29,7 @@ def write_clipboard(content):
 
 def convert_to_json_literal(text):
     """Convert text to JSON literal string"""
-    return json.dumps(text)
+    return json.dumps(text, ensure_ascii=False)
 
 
 def main():
@@ -41,8 +41,6 @@ def main():
 
     # Write back to clipboard
     write_clipboard(json_literal)
-
-    print(f"Converted to JSON literal and copied to clipboard: {json_literal}")
 
 
 if __name__ == "__main__":

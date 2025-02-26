@@ -64,7 +64,6 @@
     [:##i [:open-g "raycast://extensions/raycast/window-management/right-half"]]
     [:##y [:open-g "raycast://extensions/raycast/window-management/maximize"]]
     [:##o [:open-g "raycast://extensions/raycast/window-management/previous-display"]]
-    [:##p [:open-g "raycast://extensions/raycast/window-management/next-display"]]
     [:##v [:open-g "raycast://extensions/raycast/clipboard-history/clipboard-history"]]
     [:comma :page_down]
     [:period :page_up]]}
