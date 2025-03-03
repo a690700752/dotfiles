@@ -123,10 +123,6 @@ fuckEC() {
     pkill EasyMonitor
 }
 
-# export NVM_DIR="$HOME/.nvm"
-# [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
-# [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
-
 
 export ZSH="$HOME/.oh-my-zsh"
 source $ZSH/oh-my-zsh.sh
@@ -157,16 +153,12 @@ zinit light-mode for \
 zinit snippet OMZP::git
 zinit snippet OMZP::vscode
 zinit snippet OMZP::brew
-zinit snippet OMZP::rbenv
-zinit snippet OMZP::fnm
 
 zinit light zsh-users/zsh-completions
 zinit light zsh-users/zsh-autosuggestions
 
 ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE='fg=180'
 
-export PATH="$(brew --prefix)/opt/python@3.10/libexec/bin:$PATH"
-
-eval "$(fnm env --use-on-cd)"
 eval "$(zoxide init zsh)"
 eval "$(starship init zsh)"
+eval "$(~/.local/bin/mise activate zsh)"
